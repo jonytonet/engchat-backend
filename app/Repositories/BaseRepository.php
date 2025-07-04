@@ -576,10 +576,16 @@ abstract class BaseRepository
      * @param  array  $ids
      * @param  array  $data
      * @return int
+     * @throws \InvalidArgumentException
      */
     public function updateBatch(array $ids, array $data): int
     {
-        return $this->model->whereIn('id', $ids)->update($data);
+        if (empty($ids) || empty($data)) {
+            return 0;
+        }
+
+        $result = $this->model->whereIn('id', $ids)->update($data);
+        return is_bool($result) ? 0 : $result;
     }
 
     /**

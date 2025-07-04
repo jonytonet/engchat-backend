@@ -7,7 +7,7 @@ namespace App\DTOs;
 use App\Enums\MessageType;
 use App\Models\Message;
 
-readonly class MessageDTO
+readonly class MessageWithAttachmentsDTO
 {
     public function __construct(
         public int $id,
@@ -26,7 +26,10 @@ readonly class MessageDTO
         public bool $isFromContact,
         public ?int $replyToMessageId,
         public \DateTime $createdAt,
-        public \DateTime $updatedAt
+        public \DateTime $updatedAt,
+        // Relations
+        public array $attachments = [],
+        public ?MessageDTO $replyToMessage = null
     ) {}
 
     public static function fromModel(Message $message): self
@@ -48,7 +51,12 @@ readonly class MessageDTO
             isFromContact: $message->is_from_contact,
             replyToMessageId: $message->reply_to_message_id,
             createdAt: $message->created_at,
-            updatedAt: $message->updated_at
+            updatedAt: $message->updated_at,
+            // Relations
+            attachments: $message->relationLoaded('attachments') && $message->attachments
+                ? $message->attachments->map(fn($attachment) => MessageAttachmentDTO::fromModel($attachment))->toArray()
+                : [],
+            replyToMessage: null // Será definido pelos Services quando necessário
         );
     }
 
@@ -73,6 +81,9 @@ readonly class MessageDTO
             'reply_to_message_id' => $this->replyToMessageId,
             'created_at' => $this->createdAt->format('Y-m-d H:i:s'),
             'updated_at' => $this->updatedAt->format('Y-m-d H:i:s'),
+            // Relations
+            'attachments' => array_map(fn($attachment) => $attachment->toArray(), $this->attachments),
+            'reply_to_message' => $this->replyToMessage?->toArray(),
         ];
     }
 }

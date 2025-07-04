@@ -7,7 +7,7 @@ namespace App\Enums;
 enum Priority: string
 {
     case LOW = 'low';
-    case NORMAL = 'normal';
+    case MEDIUM = 'medium';
     case HIGH = 'high';
     case URGENT = 'urgent';
 
@@ -15,7 +15,7 @@ enum Priority: string
     {
         return match($this) {
             self::LOW => 'Baixa',
-            self::NORMAL => 'Normal',
+            self::MEDIUM => 'Média',
             self::HIGH => 'Alta',
             self::URGENT => 'Urgente',
         };
@@ -25,7 +25,7 @@ enum Priority: string
     {
         return match($this) {
             self::LOW => 'gray',
-            self::NORMAL => 'blue',
+            self::MEDIUM => 'blue',
             self::HIGH => 'orange',
             self::URGENT => 'red',
         };
@@ -35,7 +35,7 @@ enum Priority: string
     {
         return match($this) {
             self::LOW => 1,
-            self::NORMAL => 2,
+            self::MEDIUM => 2,
             self::HIGH => 3,
             self::URGENT => 4,
         };

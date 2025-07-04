@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\DTOs;
 
+use App\Enums\ConversationStatus;
+use App\Enums\Priority;
 use App\Http\Requests\CreateConversationRequest;
-use App\Models\Conversation;
 
 readonly class CreateConversationDTO
 {
@@ -13,7 +14,11 @@ readonly class CreateConversationDTO
         public int $contactId,
         public int $channelId,
         public ?int $categoryId = null,
-        public string $priority = 'normal'
+        public ?int $assignedTo = null,
+        public ConversationStatus $status = ConversationStatus::OPEN,
+        public Priority $priority = Priority::MEDIUM,
+        public array $tags = [],
+        public bool $isBotHandled = false
     ) {}
 
     public static function fromRequest(CreateConversationRequest $request): self
@@ -22,7 +27,11 @@ readonly class CreateConversationDTO
             contactId: $request->validated('contact_id'),
             channelId: $request->validated('channel_id'),
             categoryId: $request->validated('category_id'),
-            priority: $request->validated('priority', 'normal')
+            assignedTo: $request->validated('assigned_to'),
+            status: ConversationStatus::from($request->validated('status', 'open')),
+            priority: Priority::from($request->validated('priority', 'medium')),
+            tags: $request->validated('tags', []),
+            isBotHandled: $request->validated('is_bot_handled', false)
         );
     }
 
@@ -32,9 +41,12 @@ readonly class CreateConversationDTO
             'contact_id' => $this->contactId,
             'channel_id' => $this->channelId,
             'category_id' => $this->categoryId,
-            'priority' => $this->priority,
-            'status' => 'open',
-            'last_message_at' => now(),
+            'assigned_to' => $this->assignedTo,
+            'status' => $this->status->value,
+            'priority' => $this->priority->value,
+            'tags' => $this->tags,
+            'is_bot_handled' => $this->isBotHandled,
+            'started_at' => now(),
         ];
     }
 }

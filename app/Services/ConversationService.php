@@ -301,10 +301,10 @@ class ConversationService
             ]);
         }
 
-        if ($contact->isBlocked) {
+       /*  if ($contact->isBlocked) {
             throw ValidationException::withMessages([
                 'contact_id' => 'Não é possível criar conversa com contato bloqueado.'
             ]);
-        }
+        } */
     }
 }

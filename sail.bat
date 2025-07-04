@@ -5,7 +5,7 @@ REM Usage: sail.bat [command]
 if "%1"=="" (
     echo EngChat Sail Commands:
     echo   up         - Start all containers
-    echo   down       - Stop all containers
+    echo   down       - Stop all containers  
     echo   build      - Build containers
     echo   artisan    - Run artisan commands
     echo   composer   - Run composer commands
@@ -27,7 +27,7 @@ if "%1"=="up" (
     echo.
     echo ✅ EngChat containers started!
     echo 🌐 App: http://localhost:8000
-    echo 📧 Mailpit: http://localhost:8025
+    echo 📧 Mailpit: http://localhost:8025  
     echo 🐰 RabbitMQ: http://localhost:15672
     echo 📊 Swagger: http://localhost:8000/api/documentation
     goto :EOF

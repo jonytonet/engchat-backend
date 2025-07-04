@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\DTOs;
 
+use App\Enums\ConversationStatus;
+use App\Enums\Priority;
 use App\Models\Conversation;
 
 readonly class ConversationDTO
@@ -14,13 +16,15 @@ readonly class ConversationDTO
         public int $channelId,
         public ?int $categoryId,
         public ?int $assignedTo,
-        public string $status,
-        public string $priority,
-        public ?string $subject,
-        public ?\DateTime $lastMessageAt,
+        public ConversationStatus $status,
+        public Priority $priority,
+        public ?int $satisfactionRating,
+        public \DateTime $startedAt,
         public ?\DateTime $closedAt,
-        public ?int $closedBy,
-        public array $metadata,
+        public ?int $firstResponseTime,
+        public ?int $resolutionTime,
+        public array $tags,
+        public bool $isBotHandled,
         public \DateTime $createdAt,
         public \DateTime $updatedAt
     ) {}
@@ -33,13 +37,15 @@ readonly class ConversationDTO
             channelId: $conversation->channel_id,
             categoryId: $conversation->category_id,
             assignedTo: $conversation->assigned_to,
-            status: $conversation->status->value,
-            priority: $conversation->priority->value,
-            subject: $conversation->subject,
-            lastMessageAt: $conversation->last_message_at,
+            status: $conversation->status,
+            priority: $conversation->priority,
+            satisfactionRating: $conversation->satisfaction_rating,
+            startedAt: $conversation->started_at,
             closedAt: $conversation->closed_at,
-            closedBy: $conversation->closed_by,
-            metadata: $conversation->metadata ?? [],
+            firstResponseTime: $conversation->first_response_time,
+            resolutionTime: $conversation->resolution_time,
+            tags: $conversation->tags ?? [],
+            isBotHandled: $conversation->is_bot_handled,
             createdAt: $conversation->created_at,
             updatedAt: $conversation->updated_at
         );
@@ -53,13 +59,17 @@ readonly class ConversationDTO
             'channel_id' => $this->channelId,
             'category_id' => $this->categoryId,
             'assigned_to' => $this->assignedTo,
-            'status' => $this->status,
-            'priority' => $this->priority,
-            'subject' => $this->subject,
-            'last_message_at' => $this->lastMessageAt?->format('Y-m-d H:i:s'),
+            'status' => $this->status->value,
+            'status_label' => $this->status->label(),
+            'priority' => $this->priority->value,
+            'priority_label' => $this->priority->label(),
+            'satisfaction_rating' => $this->satisfactionRating,
+            'started_at' => $this->startedAt->format('Y-m-d H:i:s'),
             'closed_at' => $this->closedAt?->format('Y-m-d H:i:s'),
-            'closed_by' => $this->closedBy,
-            'metadata' => $this->metadata,
+            'first_response_time' => $this->firstResponseTime,
+            'resolution_time' => $this->resolutionTime,
+            'tags' => $this->tags,
+            'is_bot_handled' => $this->isBotHandled,
             'created_at' => $this->createdAt->format('Y-m-d H:i:s'),
             'updated_at' => $this->updatedAt->format('Y-m-d H:i:s'),
         ];

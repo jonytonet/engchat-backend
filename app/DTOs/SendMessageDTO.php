@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\DTOs;
 
+use App\Enums\MessageType;
 use App\Http\Requests\SendMessageRequest;
 
 readonly class SendMessageDTO
@@ -12,8 +13,8 @@ readonly class SendMessageDTO
         public int $conversationId,
         public ?int $contactId,
         public ?int $userId,
-        public string $type,
-        public string $content,
+        public MessageType $type,
+        public ?string $content,
         public ?string $mediaUrl = null,
         public ?string $mediaType = null,
         public ?int $mediaSize = null,
@@ -29,7 +30,7 @@ readonly class SendMessageDTO
             conversationId: $conversationId,
             contactId: $request->validated('contact_id'),
             userId: $request->validated('user_id'),
-            type: $request->validated('type', 'text'),
+            type: MessageType::from($request->validated('type', 'text')),
             content: $request->validated('content'),
             mediaUrl: $request->validated('media_url'),
             mediaType: $request->validated('media_type'),
@@ -47,7 +48,7 @@ readonly class SendMessageDTO
             'conversation_id' => $this->conversationId,
             'contact_id' => $this->contactId,
             'user_id' => $this->userId,
-            'type' => $this->type,
+            'type' => $this->type->value,
             'content' => $this->content,
             'media_url' => $this->mediaUrl,
             'media_type' => $this->mediaType,

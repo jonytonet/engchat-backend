@@ -6,7 +6,6 @@ namespace App\Models;
 
 use App\Enums\ConversationStatus;
 use App\Enums\Priority;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -109,6 +108,11 @@ class Conversation extends Model
         return $this->belongsTo(Message::class, 'latest_message_id');
     }
 
+    public function transfers(): HasMany
+    {
+        return $this->hasMany(ConversationTransfer::class);
+    }
+
     // Scopes
     public function scopeOpen($query)
     {
@@ -133,35 +137,5 @@ class Conversation extends Model
     public function scopeByAgent($query, int $agentId)
     {
         return $query->where('assigned_to', $agentId);
-    }
-
-    // Business Logic Methods
-    public function isOpen(): bool
-    {
-        return $this->status === ConversationStatus::OPEN;
-    }
-
-    public function isAssigned(): bool
-    {
-        return $this->status === ConversationStatus::ASSIGNED;
-    }
-
-    public function isClosed(): bool
-    {
-        return $this->status === ConversationStatus::CLOSED;
-    }
-
-    public function canReceiveMessages(): bool
-    {
-        return in_array($this->status, [
-            ConversationStatus::OPEN,
-            ConversationStatus::ASSIGNED,
-        ]);
-    }
-
-    public function isOld(): bool
-    {
-        return $this->last_message_at &&
-               Carbon::parse($this->last_message_at)->diffInDays(now()) > 7;
     }
 }
