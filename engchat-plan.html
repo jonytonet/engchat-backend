@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EngChat - Plataforma de Atendimento MultiCanal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            font-weight: 700;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin: 0 5px;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 35px;
+            margin-bottom: 25px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+        }
+
+        .section h2 {
+            font-size: 2.2em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .section h3 {
+            font-size: 1.5em;
+            color: #34495e;
+            margin: 25px 0 15px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .section h3::before {
+            content: "▶";
+            color: #667eea;
+            margin-right: 10px;
+            font-size: 0.8em;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 20px 0;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border-left: 4px solid #667eea;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .card h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .tech-item {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+            transition: transform 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .tech-item.flutter {
+            background: linear-gradient(45deg, #02569B, #0175C2);
+        }
+
+        .tech-item.database {
+            background: linear-gradient(45deg, #336791, #4078c0);
+        }
+
+        .tech-item.queue {
+            background: linear-gradient(45deg, #FF6600, #FF8C00);
+        }
+
+        .tech-item:hover {
+            transform: scale(1.05);
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, #667eea, #764ba2);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding: 15px 0;
+            padding-left: 30px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -35px;
+            top: 20px;
+            width: 12px;
+            height: 12px;
+            background: #667eea;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .timeline-item h4 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .timeline-item .hours {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        .phase-mvp {
+            background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+            border-left: 4px solid #4caf50;
+        }
+
+        .phase-future {
+            background: linear-gradient(135deg, #fff3e0, #ffcc02);
+            border-left: 4px solid #ff9800;
+        }
+
+        .justification {
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #ff9800;
+        }
+
+        .justification h4 {
+            color: #f57c00;
+            margin-bottom: 12px;
+        }
+
+        .db-table {
+            background: linear-gradient(135deg, #f3e5f5, #e1bee7);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 3px solid #9c27b0;
+        }
+
+        .db-table h5 {
+            color: #7b1fa2;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .db-table ul {
+            margin: 0;
+            padding-left: 15px;
+        }
+
+        .db-table li {
+            margin: 3px 0;
+            font-size: 0.9em;
+        }
+
+        ul {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+
+        li {
+            margin: 8px 0;
+            padding-left: 5px;
+        }
+
+        .highlight {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .warning {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border: 1px solid #ffc107;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+
+        .warning h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .section {
+                padding: 25px;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>EngChat</h1>
+            <p>Plataforma MultiCanal de Atendimento com Chat em Tempo Real e Videoconferência</p>
+            <div>
+                <span class="badge">Laravel 12 API</span>
+                <span class="badge">Flutter MultiPlataforma</span>
+                <span class="badge">TALL Stack Admin</span>
+                <span class="badge">High Scalability</span>
+                <span class="badge">Teams Integration</span>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🎯 Visão Geral do Projeto</h2>
+            <p>O EngChat é uma plataforma completa de atendimento multicanal que combina <strong>chat em tempo real</strong>, <strong>videoconferência</strong> e <strong>CRM integrado</strong>. Especialmente desenvolvida para empresas de vendas de peças para máquinas pesadas como <strong>Caterpillar, Cummins, JCB</strong> e similares.</p>
+            
+            <p>A arquitetura híbrida utiliza <strong>Laravel como API backend</strong> e <strong>Flutter para aplicações nativas</strong> (Android, iOS, Windows), proporcionando alta capacidade de usuários simultâneos com máxima performance e experiência nativa em cada plataforma.</p>
+            
+            <div class="justification">
+                <h4>🚀 Por que Arquitetura Híbrida Laravel + Flutter?</h4>
+                <ul>
+                    <li><strong>Laravel (Backend/Admin):</strong> API robusta, TALL Stack para painel administrativo, ecosystem maduro</li>
+                    <li><strong>Flutter (Frontend):</strong> Performance nativa, uma base de código para 3 plataformas, UX superior</li>
+                    <li><strong>Escalabilidade:</strong> Microserviços com API centralizada e apps distribuídos</li>
+                    <li><strong>Manutenibilidade:</strong> Separação clara de responsabilidades e tecnologias especializadas</li>
+                    <li><strong>Time-to-Market:</strong> Desenvolvimento paralelo backend/frontend</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🛠️ Stack Tecnológica Completa</h2>
+            
+            <h3>Backend & API</h3>
+            <div class="tech-stack">
+                <a href="https://laravel.com/docs/12.x" target="_blank" class="tech-item">Laravel 12 API</a>
+                <a href="https://laravel.com/docs/12.x/sanctum" target="_blank" class="tech-item">Laravel Sanctum</a>
+                <a href="https://laravel.com/docs/12.x/reverb" target="_blank" class="tech-item">Laravel Reverb</a>
+                <a href="https://www.rabbitmq.com/docs" target="_blank" class="tech-item queue">RabbitMQ</a>
+                <a href="https://mariadb.org/documentation/" target="_blank" class="tech-item database">MariaDB</a>
+                <a href="https://redis.io/docs/latest/" target="_blank" class="tech-item database">Redis</a>
+                <a href="http://supervisord.org/introduction.html" target="_blank" class="tech-item">Supervisor</a>
+            </div>
+
+            <h3>Painel Administrativo (TALL Stack Customizado)</h3>
+            <div class="tech-stack">
+                <a href="https://livewire.laravel.com/docs/quickstart" target="_blank" class="tech-item">Livewire 3</a>
+                <a href="https://alpinejs.dev/start-here" target="_blank" class="tech-item">AlpineJS</a>
+                <a href="https://tailwindcss.com/docs" target="_blank" class="tech-item">TailwindCSS</a>
+                <a href="https://laravel.com/docs/12.x" target="_blank" class="tech-item">Laravel Components</a>
+            </div>
+
+            <h3>Aplicações Cliente</h3>
+            <div class="tech-stack">
+                <a href="https://docs.flutter.dev" target="_blank" class="tech-item flutter">Flutter 3.24+</a>
+                <a href="https://dart.dev/guides" target="_blank" class="tech-item flutter">Dart 3.5+</a>
+                <a href="https://pub.dev/packages/flutter_webrtc" target="_blank" class="tech-item flutter">WebRTC Flutter</a>
+                <a href="https://pub.dev/packages/socket_io_client" target="_blank" class="tech-item flutter">Socket.IO Client</a>
+                <a href="https://docs.agora.io/en/video-calling/get-started/get-started-sdk" target="_blank" class="tech-item flutter">Agora.io SDK</a>
+                <a href="https://riverpod.dev/docs/introduction/getting_started" target="_blank" class="tech-item flutter">Riverpod</a>
+                <a href="https://firebase.google.com/docs/cloud-messaging/flutter/client" target="_blank" class="tech-item flutter">Firebase FCM</a>
+            </div>
+
+            <h3>Infraestrutura</h3>
+            <div class="tech-stack">
+                <a href="https://docs.docker.com" target="_blank" class="tech-item">Docker & Compose</a>
+                <a href="https://nginx.org/en/docs/" target="_blank" class="tech-item">Nginx</a>
+                <a href="https://letsencrypt.org/docs/" target="_blank" class="tech-item">SSL/TLS</a>
+                <a href="https://aws.amazon.com/s3/getting-started/" target="_blank" class="tech-item">Cloud Storage</a>
+            </div>
+
+            <div class="justification">
+                <h4>🎯 Benefícios do Flutter para EngChat</h4>
+                <ul>
+                    <li><strong>Performance Nativa:</strong> 60fps em todas as plataformas, sem lag no chat em tempo real</li>
+                    <li><strong>Multiplataforma Real:</strong> 90% do código compartilhado entre Android, iOS e Windows</li>
+                    <li><strong>UX Superior:</strong> Animações fluidas, gestos nativos, design material e cupertino</li>
+                    <li><strong>Recursos Avançados:</strong> Câmera, microfone, notificações push, armazenamento local</li>
+                    <li><strong>Offline-First:</strong> Funciona sem internet e sincroniza quando conecta</li>
+                    <li><strong>Menor Custo:</strong> Uma equipe desenvolve para 3 plataformas simultâneas</li>
+                    <li><strong>WebRTC Nativo:</strong> Videochamadas de alta qualidade integradas ao sistema</li>
+                    <li><strong>Riverpod:</strong> Gerenciamento de estado reativo e type-safe</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🏗️ Arquitetura do Sistema</h2>
+            <div class="grid">
+                <div class="card">
+                    <h4>🔧 Laravel API Backend</h4>
+                    <ul>
+                        <li>API RESTful para todas as operações</li>
+                        <li>WebSocket (Reverb) para chat em tempo real</li>
+                        <li>Queue processing para tarefas pesadas</li>
+                        <li>Autenticação JWT/Sanctum</li>
+                        <li>File upload e storage</li>
+                        <li>Integração WhatsApp Business API</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>📱 Flutter Apps Nativas</h4>
+                    <ul>
+                        <li><strong>Android:</strong> Chat, calls, notificações push</li>
+                        <li><strong>iOS:</strong> Integração com FaceTime/CallKit</li>
+                        <li><strong>Windows:</strong> Desktop agent dashboard</li>
+                        <li>Riverpod para gerenciamento de estado</li>
+                        <li>Socket.IO Client para real-time</li>
+                        <li>FCM para push notifications</li>
+                        <li>Câmera integrada para scanner QR</li>
+                        <li>Gravação de áudio nativa</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🖥️ Painel Administrativo Customizado</h4>
+                    <ul>
+                        <li>TALL Stack (Tailwind, Alpine, Livewire, Laravel)</li>
+                        <li>Componentes customizados para CRUD</li>
+                        <li>Dashboards em tempo real</li>
+                        <li>Gestão de usuários e permissões</li>
+                        <li>Relatórios e métricas</li>
+                        <li>Configurações do sistema</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🔄 Comunicação Real-Time</h4>
+                    <ul>
+                        <li><strong>Reverb:</strong> WebSocket server para chat</li>
+                        <li><strong>FCM:</strong> Push notifications Flutter</li>
+                        <li><strong>Socket.IO:</strong> Client-side real-time</li>
+                        <li>Event Broadcasting</li>
+                        <li>Queue Jobs para processamento</li>
+                        <li>Cache distribuído com Redis</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section phase-mvp">
+            <h2>🚀 FASE 1 - MVP CHAT (30 DIAS)</h2>
+            <p><strong>Foco:</strong> Sistema de chat funcional com atendimento básico em tempo real</p>
+            
+            <div class="grid">
+                <div class="card">
+                    <h4>✅ Funcionalidades MVP</h4>
+                    <ul>
+                        <li>Chat em tempo real (WhatsApp + Sistema)</li>
+                        <li>Sistema de filas de atendimento</li>
+                        <li>Bot inicial de filtro e categorização</li>
+                        <li>Cadastro básico de contatos</li>
+                        <li>Painel do atendente (Flutter)</li>
+                        <li>Painel administrativo básico</li>
+                        <li>Histórico de conversas</li>
+                        <li>Envio/recebimento de arquivos</li>
+                        <li>Mensagens de áudio</li>
+                        <li>Transferência entre atendentes</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🎯 Entregáveis</h4>
+                    <ul>
+                        <li><strong>API Laravel:</strong> Endpoints básicos</li>
+                        <li><strong>App Android:</strong> Chat completo</li>
+                        <li><strong>App iOS:</strong> Chat completo</li>
+                        <li><strong>App Windows:</strong> Dashboard agente</li>
+                        <li><strong>Admin Web:</strong> Gestão básica customizada</li>
+                        <li><strong>WhatsApp:</strong> Integração funcional</li>
+                        <li><strong>Documentação:</strong> APIs e deployment</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section phase-future">
+            <h2>🔮 MELHORIAS FUTURAS</h2>
+            
+            <div class="grid">
+                <div class="card">
+                    <h4>📹 Sistema de Reuniões (Teams-like)</h4>
+                    <ul>
+                        <li>Videochamadas 1:1 e em grupo</li>
+                        <li>Compartilhamento de tela</li>
+                        <li>Gravação de reuniões</li>
+                        <li>Chat durante videoconferência</li>
+                        <li>Agendamento de reuniões</li>
+                        <li>Integração com calendário</li>
+                        <li>Salas virtuais persistentes</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🤖 IA e Automação Avançada</h4>
+                    <ul>
+                        <li>Chatbot com OpenAI/Claude</li>
+                        <li>Reconhecimento de peças por imagem</li>
+                        <li>Análise de sentimento</li>
+                        <li>Sugestões automáticas</li>
+                        <li>Classificação inteligente</li>
+                        <li>Respostas sugeridas</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>📊 CRM Completo</h4>
+                    <ul>
+                        <li>Pipeline de vendas visual</li>
+                        <li>Gestão completa de clientes</li>
+                        <li>Catálogo inteligente de peças</li>
+                        <li>Sistema de orçamentos</li>
+                        <li>Relatórios avançados</li>
+                        <li>Dashboards executivos</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>📧 Marketing e Promoções</h4>
+                    <ul>
+                        <li>Sistema de mala direta</li>
+                        <li>Campanhas segmentadas</li>
+                        <li>Templates personalizáveis</li>
+                        <li>Métricas de engajamento</li>
+                        <li>A/B testing</li>
+                        <li>Automação de follow-up</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>💾 Modelagem Completa do Banco de Dados</h2>
+
+            <h3>👥 Gestão de Usuários e Permissões</h3>
+            <div class="grid">
+                <div class="db-table">
+                    <h5>users</h5>
+                    <ul>
+                        <li>id, name, email, password, phone</li>
+                        <li>avatar, status (online/offline/busy/away)</li>
+                        <li>role_id, department_id, manager_id</li>
+                        <li>last_activity, timezone, language</li>
+                        <li>is_active, email_verified_at</li>
+                    </ul>
+                </div>
+                <div class="db-table">
+                    <h5>roles</h5>
+                    <ul>
+                        <li>id, name (admin/manager/agent)</li>
+                        <li>description, permissions (JSON)</li>
+                        <li>can_transfer, can_close_tickets</li>
+                        <li>max_simultaneous_chats</li>
+                    </ul>
+                </div>
+                <div class="db-table">
+                    <h5>departments</h5>
+                    <ul>
+                        <li>id, name, description</li>
+                        <li>manager_id, is_active</li>
+                        <li>working_hours (JSON)</li>
+                        <li>auto_assignment_enabled</li>
+                    </ul>
+                </div>
+                <div class="db-table">
+                    <h5>user_categories</h5>
+                    <ul>
+                        <li>user_id, category_id</li>
+                        <li>priority_level (1-5)</li>
+                        <li>is_specialist</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>📋 Categorias e Classificação</h3>
+            <div class="grid">
+                <div class="db-table">
+                    <h5>categories</h5>
+                    <ul>
+                        <li>id, name, description, color</li>
+                        <li>parent_id (subcategorias)</li>
+                        <li>priority, estimated_time</li>
+                        <li>auto_responses (JSON)</li>
+                        <li>requires_specialist</li>
+                    </ul>
+                </div>
+                <div class="db-table">
+                    <h5>category_keywords</h5>
+                    <ul>
+                        <li>id, category_id, keyword</li>
+                        <li>weight, is_active</li>
+                        <li>language</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>👤 Contatos e Clientes</h3>
+            <div class="grid">
+                <div class="db-table">
+                    <h5>contacts</h5>
+                    <ul>
+                        <li>id, name, phone, email</li>
+                        <li>avatar, company, document</li>
+                        <li>tags (JSON), priority</li>
+                        <li>blacklisted, blacklist_reason</li>
+                        <li>preferred_language, timezone</li>
+                        <li>last_interaction, total_interactions</li>
+                    </ul>
+                </div>
+                <div class="db-table">
+                    <h5>contact_custom_fields</h5>
+                    <ul>
+                        <li>contact_id, field_name</li>
+                        <li>field_value, field_type</li>
+                    </ul>
+                </div>
+                <div class="db-table">
+                    <h5>contact_notes</h5>
+                    <ul>
+                        <li>id, contact_id, user_id</li>
+                        <li>note, is_private</li>
+                        <li>created_at</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>💬 Conversas e Mensagens</h3>
+            <div class="grid">
+                <div class="db-table">
+                    <h5>conversations</h5>
+                    <ul>
+                        <li>id, contact_id, channel_id</li>
+                        <li>assigned_to, category_id</li>
+                        <li>status (open/pending/closed)</li>
+                        <li>priority, satisfaction_rating</li>
+                        <li>started_at, closed_at, response_time</li>
+                        <li>tags (JSON), is_bot_handled</li>
+                    </ul>
+                </div>
+                <div class="db-table">
+                    <h5>messages</h5>
+                    <ul>
+                        <li>id, conversation_id, sender_type</li>
+                        <li>sender_id, message_type</li>
+                        <li>content, metadata (JSON)</li>
+                        <li>is_read, read_at, delivered_at</li>
+                        <li>reply_to_id, is_internal</li>
+                    </ul>
+                </div>
+                <div class="db-table">
+                    <h5>message_attachments</h5>
+                    <ul>
+                        <li>id, message_id, file_name</li>
+                        <li>file_path, file_size, mime_type</li>
+                        <li>thumbnail_path, duration (audio/video)</li>
+                        <li>is_scanned, scan_result</li>
+                    </ul>
+                </div>
+                <div class="db-table">
+                    <h5>conversation_transfers</h5>
+                    <ul>
+                        <li>id, conversation_id</li>
+                        <li>from_user_id, to_user_id</li>
+                        <li>reason, notes</li>
+                        <li>transferred_at</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>📺 Canais de Atendimento</h3>
+            <div class="grid">
+                <div class="db-table">
+                    <h5>channels</h5>
+                    <ul>
+                        <li>id, name, type (whatsapp/telegram/web)</li>
+                        <li>configuration (JSON)</li>
+                        <li>is_active, priority</li>
+                        <li>working_hours (JSON)</li>
+                        <li>auto_response_enabled</li>
+                    </ul>
+                </div>
+                <div class="db-table">
+                    <h5>channel_integrations</h5>
+                    <ul>
+                        <li>id, channel_id, integration_type</li>
+                        <li>api_key, webhook_url</li>
+                        <li>settings (JSON), is_active</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>🤖 Bot e Automação</h3>
+            <div class="grid">
+                <div class="db-table">
+                    <h5>bot_flows</h5>
+                    <ul>
+                        <li>id, name, trigger_type</li>
+                        <li>conditions (JSON), actions (JSON)</li>
+                        <li>is_active, priority</li>
+                        <li>success_rate, usage_count</li>
+                    </ul>
+                </div>
+                <div class="db-table">
+                    <h5>auto_responses</h5>
+                    <ul>
+                        <li>id, category_id, trigger</li>
+                        <li>response_text, response_type</li>
+                        <li>conditions (JSON), is_active</li>
+                        <li>usage_count, success_rate</li>
+                    </ul>
+                </div>
+                <div class="db-table">
+                    <h5>message_templates</h5>
+                    <ul>
+                        <li>id, name, content, category</li>
+                        <li>variables (JSON), is_global</li>
+                        <li>created_by, usage_count</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>📧 Sistema de Mala Direta</h3>
+            <div class="grid">
+                <div class="db-table">
+                    <h5>broadcast_campaigns</h5>
+                    <ul>
+                        <li>id, name, description</li>
+                        <li>message_template, target_criteria (JSON)</li>
+                        <li>scheduled_at, status</li>
+                        <li>sent_count, delivered_count, read_count</li>
+                        <li>created_by</li>
+                    </ul>
+                </div>
+                <div class="db-table">
+                    <h5>broadcast_recipients</h5>
+                    <ul>
+                        <li>campaign_id, contact_id</li>
+                        <li>status (pending/sent/delivered/read/failed)</li>
+                        <li>sent_at, delivered_at, read_at</li>
+                        <li>error_message</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>📹 Sistema de Reuniões (Futuro)</h3>
+            <div class="grid">
+                <div class="db-table">
+                    <h5>video_rooms</h5>
+                    <ul>
+                        <li>id, name, room_code</li>
+                        <li>created_by, max_participants</li>
+                        <li>is_persistent, password</li>
+                        <li>settings (JSON), is_active</li>
+                    </ul>
+                </div>
+                <div class="db-table">
+                    <h5>video_sessions</h5>
+                    <ul>
+                        <li>id, room_id, conversation_id</li>
+                        <li>started_at, ended_at</li>
+                        <li>participants (JSON), recording_url</li>
+                        <li>quality_rating</li>
+                    </ul>
+                </div>
+                <div class="db-table">
+                    <h5>meeting_participants</h5>
+                    <ul>
+                        <li>session_id, user_id, contact_id</li>
+                        <li>joined_at, left_at</li>
+                        <li>role (host/participant/viewer)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>📊 Métricas e Auditoria</h3>
+            <div class="grid">
+                <div class="db-table">
+                    <h5>conversation_metrics</h5>
+                    <ul>
+                        <li>conversation_id, first_response_time</li>
+                        <li>resolution_time, total_messages</li>
+                        <li>agent_messages, customer_messages</li>
+                        <li>transfers_count, satisfaction_score</li>
+                    </ul>
+                </div>
+                <div class="db-table">
+                    <h5>agent_metrics</h5>
+                    <ul>
+                        <li>user_id, date, active_time</li>
+                        <li>conversations_handled, avg_response_time</li>
+                        <li>satisfaction_avg, transfers_received</li>
+                        <li>transfers_made</li>
+                    </ul>
+                </div>
+                <div class="db-table">
+                    <h5>system_logs</h5>
+                    <ul>
+                        <li>id, user_id, action</li>
+                        <li>entity_type, entity_id</li>
+                        <li>old_values (JSON), new_values (JSON)</li>
+                        <li>ip_address, user_agent, created_at</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🔄 Fluxos Iniciais do Bot</h2>
+            <div class="grid">
+                <div class="card">
+                    <h4>🚀 Fluxo de Boas-vindas</h4>
+                    <ul>
+                        <li><strong>1.</strong> Mensagem de boas-vindas personalizada</li>
+                        <li><strong>2.</strong> Identificação: cliente novo ou existente?</li>
+                        <li><strong>3.</strong> Coleta de dados básicos (nome, empresa)</li>
+                        <li><strong>4.</strong> Apresentação das opções de atendimento</li>
+                        <li><strong>5.</strong> Direcionamento para categoria apropriada</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🎯 Classificação Automática</h4>
+                    <ul>
+                        <li><strong>Vendas:</strong> "orçamento", "preço", "comprar"</li>
+                        <li><strong>Suporte:</strong> "problema", "defeito", "ajuda"</li>
+                        <li><strong>Financeiro:</strong> "pagamento", "boleto", "desconto"</li>
+                        <li><strong>Emergência:</strong> "urgente", "parado", "quebrou"</li>
+                        <li><strong>Geral:</strong> outras consultas</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>⏰ Horário de Atendimento</h4>
+                    <ul>
+                        <li><strong>Dentro do horário:</strong> Fila de atendimento</li>
+                        <li><strong>Fora do horário:</strong> Mensagem automática</li>
+                        <li><strong>Feriados:</strong> Resposta personalizada</li>
+                        <li><strong>Emergências:</strong> Canal prioritário 24/7</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>📋 Qualificação de Lead</h4>
+                    <ul>
+                        <li>Tipo de máquina/equipamento</li>
+                        <li>Urgência da necessidade</li>
+                        <li>Budget estimado</li>
+                        <li>Localização/região</li>
+                        <li>Preferência de contato</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🔐 Sistema de Permissões</h2>
+            <div class="grid">
+                <div class="card">
+                    <h4>👑 ADMIN</h4>
+                    <ul>
+                        <li>Acesso total ao sistema</li>
+                        <li>Gestão de usuários e roles</li>
+                        <li>Configurações globais</li>
+                        <li>Relatórios executivos</li>
+                        <li>Backup e manutenção</li>
+                        <li>Integrações e APIs</li>
+                        <li>Campanhas de mala direta</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>📊 GERENTE</h4>
+                    <ul>
+                        <li>Gestão da equipe</li>
+                        <li>Relatórios departamentais</li>
+                        <li>Transferência de conversas</li>
+                        <li>Configuração de categorias</li>
+                        <li>Templates e respostas padrão</li>
+                        <li>Métricas e dashboards</li>
+                        <li>Campanhas segmentadas</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🎧 ATENDENTE</h4>
+                    <ul>
+                        <li>Chat com clientes</li>
+                        <li>Acesso ao histórico do cliente</li>
+                        <li>Criação de tickets</li>
+                        <li>Templates básicos</li>
+                        <li>Transferência para especialistas</li>
+                        <li>Métricas pessoais</li>
+                        <li>Notas internas</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>⚙️ Configurações por Role</h4>
+                    <ul>
+                        <li><strong>Max chats simultâneos:</strong> 1-10</li>
+                        <li><strong>Categorias permitidas:</strong> Selecionáveis</li>
+                        <li><strong>Horário de trabalho:</strong> Configurável</li>
+                        <li><strong>Auto-assignment:</strong> Sim/Não</li>
+                        <li><strong>Acesso a relatórios:</strong> Limitado</li>
+                        <li><strong>Videochamadas:</strong> Permitir/Negar</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>⏱️ Cronograma Revisado</h2>
+            <div class="timeline">
+                <div class="timeline-item phase-mvp">
+                    <h4>🎯 FASE MVP - Chat Funcional (30 dias)</h4>
+                    <p><strong>Prioridade MÁXIMA:</strong> Sistema de chat em tempo real operacional</p>
+                    <ul>
+                        <li>API Laravel com WebSocket (Reverb)</li>
+                        <li>Apps Flutter (Android/iOS/Windows) com Riverpod</li>
+                        <li>Integração WhatsApp Business</li>
+                        <li>FCM para push notifications</li>
+                        <li>Bot inicial de triagem</li>
+                        <li>Painel administrativo customizado (TALL Stack)</li>
+                        <li>Sistema de filas e transferências</li>
+                        <li>Upload de arquivos e áudios</li>
+                    </ul>
+                    <div class="hours">320 horas</div>
+                </div>
+                <div class="timeline-item phase-future">
+                    <h4>📹 Futuro: Sistema de Reuniões</h4>
+                    <p>Videochamadas integradas tipo Microsoft Teams</p>
+                    <div class="hours">180 horas</div>
+                </div>
+                <div class="timeline-item phase-future">
+                    <h4>🤖 Futuro: IA e Automação Avançada</h4>
+                    <p>Chatbot inteligente com OpenAI/Claude</p>
+                    <div class="hours">160 horas</div>
+                </div>
+                <div class="timeline-item phase-future">
+                    <h4>📊 Futuro: CRM Completo</h4>
+                    <p>Pipeline de vendas e gestão completa</p>
+                    <div class="hours">200 horas</div>
+                </div>
+                <div class="timeline-item phase-future">
+                    <h4>📧 Futuro: Marketing e Mala Direta</h4>
+                    <p>Campanhas automatizadas e segmentadas</p>
+                    <div class="hours">120 horas</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🚀 Infraestrutura e Deploy</h2>
+            <div class="grid">
+                <div class="card">
+                    <h4>🖥️ Servidor Recomendado</h4>
+                    <ul>
+                        <li><strong>CPU:</strong> 8 vCPUs</li>
+                        <li><strong>RAM:</strong> 32 GB DDR4</li>
+                        <li><strong>Storage:</strong> 500 GB NVMe SSD</li>
+                        <li><strong>OS:</strong> Ubuntu Server 22.04 LTS</li>
+                        <li><strong>Backup:</strong> Automático diário</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🔧 Stack de Produção</h4>
+                    <ul>
+                        <li><strong>Web Server:</strong> Nginx</li>
+                        <li><strong>PHP:</strong> 8.3 + OPcache</li>
+                        <li><strong>Database:</strong> MariaDB 10.6+</li>
+                        <li><strong>Queue:</strong> RabbitMQ 3.12+</li>
+                        <li><strong>Cache:</strong> Redis 7.0+</li>
+                        <li><strong>WebSocket:</strong> Laravel Reverb</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>📱 Distribuição Apps</h4>
+                    <ul>
+                        <li><strong>Android:</strong> Google Play Store</li>
+                        <li><strong>iOS:</strong> Apple App Store</li>
+                        <li><strong>Windows:</strong> Microsoft Store / Installer</li>
+                        <li><strong>Web:</strong> PWA para acesso via browser</li>
+                        <li><strong>Updates:</strong> OTA automáticos</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h4>🔒 Segurança</h4>
+                    <ul>
+                        <li>SSL/TLS certificates</li>
+                        <li>JWT/Sanctum authentication</li>
+                        <li>Rate limiting</li>
+                        <li>Firewall configurado</li>
+                        <li>Logs de auditoria</li>
+                        <li>LGPD compliance</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="warning">
+            <h4>⚠️ Considerações Importantes</h4>
+            <ul>
+                <li><strong>WhatsApp Business API:</strong> Conta oficial necessária (processo pode levar 7-14 dias)</li>
+                <li><strong>Flutter Development:</strong> Equipe precisará conhecimento em Dart/Flutter + Riverpod</li>
+                <li><strong>TALL Stack Customizado:</strong> Desenvolvimento próprio de componentes administrativos</li>
+                <li><strong>Comunicação Real-Time:</strong> Reverb (WebSocket) + FCM (Push Notifications)</li>
+                <li><strong>Foco MVP:</strong> Priorizamos chat funcional em 30 dias, demais features como melhorias</li>
+                <li><strong>Videoconferência:</strong> Integração Agora.io para qualidade enterprise (futuro)</li>
+                <li><strong>Escalabilidade:</strong> Arquitetura preparada para alta concorrência de usuários</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

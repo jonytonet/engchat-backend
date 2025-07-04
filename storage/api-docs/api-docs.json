@@ -1,0 +1,812 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "EngChat API",
+        "description": "API documentation for EngChat - Customer Service Platform",
+        "contact": {
+            "name": "EngChat Development Team",
+            "email": "dev@engchat.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://my-default-host.com",
+            "description": "EngChat API Server"
+        }
+    ],
+    "paths": {
+        "/api/conversations": {
+            "get": {
+                "tags": [
+                    "Conversations"
+                ],
+                "summary": "List conversations",
+                "description": "Get a list of conversations for the authenticated user",
+                "operationId": "getConversations",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter by conversation status",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "open",
+                                "pending",
+                                "closed"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "priority",
+                        "in": "query",
+                        "description": "Filter by priority",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "low",
+                                "medium",
+                                "high",
+                                "urgent"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "channel_id",
+                        "in": "query",
+                        "description": "Filter by channel ID",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Conversation"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Conversations"
+                ],
+                "summary": "Create a new conversation",
+                "description": "Creates a new conversation",
+                "operationId": "createConversation",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "contact_id",
+                                    "channel_id",
+                                    "subject"
+                                ],
+                                "properties": {
+                                    "contact_id": {
+                                        "description": "Contact ID",
+                                        "type": "integer"
+                                    },
+                                    "channel_id": {
+                                        "description": "Channel ID",
+                                        "type": "integer"
+                                    },
+                                    "subject": {
+                                        "description": "Conversation subject",
+                                        "type": "string"
+                                    },
+                                    "priority": {
+                                        "description": "Priority level",
+                                        "type": "string",
+                                        "enum": [
+                                            "low",
+                                            "medium",
+                                            "high",
+                                            "urgent"
+                                        ]
+                                    },
+                                    "category_id": {
+                                        "description": "Category ID",
+                                        "type": "integer"
+                                    },
+                                    "description": {
+                                        "description": "Initial message/description",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Conversation created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Conversation"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Category": {
+                "title": "Category",
+                "description": "Model representing a conversation category for classification and routing",
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Category ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "name": {
+                        "description": "Category name",
+                        "type": "string",
+                        "example": "Technical Support"
+                    },
+                    "description": {
+                        "description": "Category description",
+                        "type": "string",
+                        "example": "Technical issues and troubleshooting",
+                        "nullable": true
+                    },
+                    "color": {
+                        "description": "Category color for UI",
+                        "type": "string",
+                        "example": "#667eea"
+                    },
+                    "parent_id": {
+                        "description": "Parent category ID for hierarchy",
+                        "type": "integer",
+                        "example": null,
+                        "nullable": true
+                    },
+                    "priority": {
+                        "description": "Priority level (1=low, 3=high)",
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "estimated_time": {
+                        "description": "Estimated resolution time in minutes",
+                        "type": "integer",
+                        "example": 30,
+                        "nullable": true
+                    },
+                    "auto_responses": {
+                        "description": "Automated response configuration",
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "requires_specialist": {
+                        "description": "Whether category requires specialist",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "is_active": {
+                        "description": "Whether category is active",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "created_at": {
+                        "description": "Creation timestamp",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Last update timestamp",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Channel": {
+                "title": "Channel",
+                "description": "Model representing a communication channel (WhatsApp, Telegram, etc.)",
+                "required": [
+                    "name",
+                    "type"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Channel ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "name": {
+                        "description": "Channel name",
+                        "type": "string",
+                        "example": "WhatsApp Business"
+                    },
+                    "type": {
+                        "description": "Channel type",
+                        "type": "string",
+                        "enum": [
+                            "whatsapp",
+                            "telegram",
+                            "web",
+                            "facebook",
+                            "instagram"
+                        ],
+                        "example": "whatsapp"
+                    },
+                    "configuration": {
+                        "description": "Channel configuration",
+                        "type": "object",
+                        "example": {
+                            "phone": "554133808848",
+                            "api_version": "v17.0"
+                        },
+                        "nullable": true
+                    },
+                    "is_active": {
+                        "description": "Whether channel is active",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "priority": {
+                        "description": "Channel priority",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "working_hours": {
+                        "description": "Working hours configuration",
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "auto_response_enabled": {
+                        "description": "Whether auto-response is enabled",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "created_at": {
+                        "description": "Creation timestamp",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Last update timestamp",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Contact": {
+                "title": "Contact",
+                "description": "Model representing a customer contact",
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Contact ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "name": {
+                        "description": "Contact full name",
+                        "type": "string",
+                        "example": "Maria Silva"
+                    },
+                    "email": {
+                        "description": "Contact email",
+                        "type": "string",
+                        "format": "email",
+                        "example": "maria@example.com",
+                        "nullable": true
+                    },
+                    "phone": {
+                        "description": "Contact phone number",
+                        "type": "string",
+                        "example": "+5511999999999",
+                        "nullable": true
+                    },
+                    "display_name": {
+                        "description": "Display name for chat",
+                        "type": "string",
+                        "example": "Maria",
+                        "nullable": true
+                    },
+                    "company": {
+                        "description": "Company name",
+                        "type": "string",
+                        "example": "Empresa XYZ",
+                        "nullable": true
+                    },
+                    "document": {
+                        "description": "Document number (CPF, CNPJ)",
+                        "type": "string",
+                        "example": "123.456.789-10",
+                        "nullable": true
+                    },
+                    "tags": {
+                        "description": "Contact tags",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "vip",
+                            "premium"
+                        ],
+                        "nullable": true
+                    },
+                    "priority": {
+                        "description": "Contact priority",
+                        "type": "string",
+                        "enum": [
+                            "low",
+                            "medium",
+                            "high",
+                            "urgent"
+                        ],
+                        "example": "medium"
+                    },
+                    "blacklisted": {
+                        "description": "Whether contact is blacklisted",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "blacklist_reason": {
+                        "description": "Reason for blacklisting",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "preferred_language": {
+                        "description": "Preferred language",
+                        "type": "string",
+                        "example": "pt-BR"
+                    },
+                    "timezone": {
+                        "description": "Contact timezone",
+                        "type": "string",
+                        "example": "America/Sao_Paulo"
+                    },
+                    "last_interaction": {
+                        "description": "Last interaction timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "total_interactions": {
+                        "description": "Total number of interactions",
+                        "type": "integer",
+                        "example": 15
+                    },
+                    "created_at": {
+                        "description": "Creation timestamp",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Last update timestamp",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Conversation": {
+                "title": "Conversation",
+                "description": "Model representing a customer conversation",
+                "required": [
+                    "id",
+                    "contact_id",
+                    "channel_id",
+                    "status",
+                    "subject"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Conversation ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "contact_id": {
+                        "description": "Contact ID",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "channel_id": {
+                        "description": "Channel ID",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "category_id": {
+                        "description": "Category ID",
+                        "type": "integer",
+                        "example": 1,
+                        "nullable": true
+                    },
+                    "assigned_to": {
+                        "description": "Assigned user ID",
+                        "type": "integer",
+                        "example": 5,
+                        "nullable": true
+                    },
+                    "status": {
+                        "description": "Conversation status",
+                        "type": "string",
+                        "enum": [
+                            "open",
+                            "pending",
+                            "closed"
+                        ],
+                        "example": "open"
+                    },
+                    "priority": {
+                        "description": "Priority level",
+                        "type": "string",
+                        "enum": [
+                            "low",
+                            "medium",
+                            "high",
+                            "urgent"
+                        ],
+                        "example": "medium"
+                    },
+                    "subject": {
+                        "description": "Conversation subject",
+                        "type": "string",
+                        "example": "Problema com produto"
+                    },
+                    "last_message_at": {
+                        "description": "Last message timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "closed_at": {
+                        "description": "Closure timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "closed_by": {
+                        "description": "User who closed the conversation",
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "metadata": {
+                        "description": "Additional metadata",
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "description": "Creation timestamp",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Last update timestamp",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "deleted_at": {
+                        "description": "Deletion timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "contact": {
+                        "$ref": "#/components/schemas/Contact"
+                    },
+                    "channel": {
+                        "$ref": "#/components/schemas/Channel"
+                    }
+                },
+                "type": "object"
+            },
+            "Department": {
+                "title": "Department",
+                "description": "Model representing a department within the organization",
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Department ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "name": {
+                        "description": "Department name",
+                        "type": "string",
+                        "example": "Customer Support"
+                    },
+                    "description": {
+                        "description": "Department description",
+                        "type": "string",
+                        "example": "Handles customer inquiries and support tickets",
+                        "nullable": true
+                    },
+                    "manager_id": {
+                        "description": "Manager user ID",
+                        "type": "integer",
+                        "example": 5,
+                        "nullable": true
+                    },
+                    "is_active": {
+                        "description": "Whether department is active",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "working_hours": {
+                        "description": "Working hours configuration",
+                        "type": "object",
+                        "example": {
+                            "monday": {
+                                "start": "08:00",
+                                "end": "18:00"
+                            }
+                        },
+                        "nullable": true
+                    },
+                    "auto_assignment_enabled": {
+                        "description": "Whether auto-assignment is enabled",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "created_at": {
+                        "description": "Creation timestamp",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Last update timestamp",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Role": {
+                "title": "Role",
+                "description": "Model representing a user role with permissions and chat limits",
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Role ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "name": {
+                        "description": "Role name",
+                        "type": "string",
+                        "example": "agent"
+                    },
+                    "description": {
+                        "description": "Role description",
+                        "type": "string",
+                        "example": "Customer service agent",
+                        "nullable": true
+                    },
+                    "permissions": {
+                        "description": "Array of permissions",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "chat.view",
+                            "chat.respond"
+                        ],
+                        "nullable": true
+                    },
+                    "can_transfer": {
+                        "description": "Can transfer conversations",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "can_close_tickets": {
+                        "description": "Can close tickets",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "max_simultaneous_chats": {
+                        "description": "Maximum simultaneous chats",
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "created_at": {
+                        "description": "Creation timestamp",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Last update timestamp",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "User": {
+                "title": "User",
+                "description": "Model representing a system user (agent, manager, admin)",
+                "required": [
+                    "name",
+                    "email",
+                    "password"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "User ID",
+                        "type": "integer",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "name": {
+                        "description": "User full name",
+                        "type": "string",
+                        "example": "João Silva"
+                    },
+                    "email": {
+                        "description": "User email address",
+                        "type": "string",
+                        "format": "email",
+                        "example": "joao@empresa.com"
+                    },
+                    "avatar": {
+                        "description": "Profile photo URL",
+                        "type": "string",
+                        "example": "/storage/avatars/user123.jpg",
+                        "nullable": true
+                    },
+                    "status": {
+                        "description": "Current user status",
+                        "type": "string",
+                        "enum": [
+                            "online",
+                            "offline",
+                            "busy",
+                            "away"
+                        ],
+                        "example": "online"
+                    },
+                    "role_id": {
+                        "description": "User role ID",
+                        "type": "integer",
+                        "example": 2,
+                        "nullable": true
+                    },
+                    "department_id": {
+                        "description": "Department ID",
+                        "type": "integer",
+                        "example": 1,
+                        "nullable": true
+                    },
+                    "manager_id": {
+                        "description": "Manager user ID",
+                        "type": "integer",
+                        "example": 5,
+                        "nullable": true
+                    },
+                    "last_activity": {
+                        "description": "Last activity timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "timezone": {
+                        "description": "User timezone",
+                        "type": "string",
+                        "example": "America/Sao_Paulo"
+                    },
+                    "language": {
+                        "description": "User language preference",
+                        "type": "string",
+                        "example": "pt-BR"
+                    },
+                    "is_active": {
+                        "description": "Whether user account is active",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "email_verified_at": {
+                        "description": "Email verification timestamp",
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "description": "Creation timestamp",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Last update timestamp",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "sanctum": {
+                "type": "http",
+                "description": "Use Bearer token for authentication",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Conversations",
+            "description": "Operations about conversations"
+        }
+    ]
+}
