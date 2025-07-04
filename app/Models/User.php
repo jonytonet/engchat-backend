@@ -160,13 +160,7 @@ class User extends Authenticatable
         return $this->hasMany(ConversationTransfer::class, 'to_user_id');
     }
 
-    /**
-     * Get agent metrics for this user.
-     */
-    public function agentMetrics(): HasMany
-    {
-        return $this->hasMany(AgentMetric::class);
-    }
+
 
     // ===== SCOPES =====
 
@@ -220,37 +214,5 @@ class User extends Authenticatable
     public function getIsOnlineAttribute(): bool
     {
         return $this->status === 'online';
-    }
-
-    /**
-     * Check if user can handle more conversations.
-     */
-    public function canTakeMoreConversations(): bool
-    {
-        if (!$this->role) {
-            return false;
-        }
-
-        $activeConversations = $this->assignedConversations()
-            ->whereIn('status', ['open', 'pending'])
-            ->count();
-
-        return $activeConversations < $this->role->max_simultaneous_chats;
-    }
-
-    /**
-     * Check if user has permission.
-     */
-    public function hasPermission(string $permission): bool
-    {
-        if (!$this->role || !$this->role->permissions) {
-            return false;
-        }
-
-        $permissions = is_array($this->role->permissions)
-            ? $this->role->permissions
-            : json_decode($this->role->permissions, true);
-
-        return in_array($permission, $permissions ?? []);
     }
 }

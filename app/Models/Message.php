@@ -8,11 +8,11 @@ use App\Enums\MessageType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Message extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $fillable = [
         'conversation_id',
@@ -59,6 +59,16 @@ class Message extends Model
         return $this->belongsTo(Message::class, 'reply_to_message_id');
     }
 
+    public function replies(): HasMany
+    {
+        return $this->hasMany(Message::class, 'reply_to_message_id');
+    }
+
+    public function attachments(): HasMany
+    {
+        return $this->hasMany(MessageAttachment::class);
+    }
+
     // Scopes
     public function scopeFromContact($query)
     {
@@ -90,50 +100,4 @@ class Message extends Model
         return $query->whereNotNull('read_at');
     }
 
-    // Business Logic Methods
-    public function isFromContact(): bool
-    {
-        return $this->is_from_contact;
-    }
-
-    public function isFromAgent(): bool
-    {
-        return !$this->is_from_contact;
-    }
-
-    public function hasMedia(): bool
-    {
-        return !empty($this->media_url);
-    }
-
-    public function isDelivered(): bool
-    {
-        return !is_null($this->delivered_at);
-    }
-
-    public function isRead(): bool
-    {
-        return !is_null($this->read_at);
-    }
-
-    public function isReply(): bool
-    {
-        return !is_null($this->reply_to_message_id);
-    }
-
-    public function getDisplayContent(): string
-    {
-        return match($this->type) {
-            MessageType::TEXT => $this->content,
-            MessageType::IMAGE => '📷 Imagem',
-            MessageType::VIDEO => '🎥 Vídeo',
-            MessageType::AUDIO => '🎵 Áudio',
-            MessageType::FILE => '📎 Arquivo',
-            MessageType::LOCATION => '📍 Localização',
-            MessageType::CONTACT => '👤 Contato',
-            MessageType::STICKER => '😀 Figurinha',
-            MessageType::TEMPLATE => '📋 Template',
-            MessageType::SYSTEM => $this->content,
-        };
-    }
 }

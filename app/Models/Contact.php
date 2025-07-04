@@ -92,21 +92,6 @@ class Contact extends Model
             ->where('sender_type', 'contact');
     }
 
-    /**
-     * Get custom fields for this contact.
-     */
-    public function customFields(): HasMany
-    {
-        return $this->hasMany(ContactCustomField::class);
-    }
-
-    /**
-     * Get notes for this contact.
-     */
-    public function notes(): HasMany
-    {
-        return $this->hasMany(ContactNote::class);
-    }
 
     /**
      * Get the latest conversation for this contact.
@@ -185,56 +170,6 @@ class Contact extends Model
         return $this->blacklisted;
     }
 
-    /**
-     * Check if contact is VIP.
-     */
-    public function isVip(): bool
-    {
-        return $this->priority === 'urgent' ||
-               (is_array($this->tags) && in_array('vip', $this->tags));
-    }
-
-    /**
-     * Check if contact has active conversations.
-     */
-    public function hasActiveConversations(): bool
-    {
-        return $this->activeConversations()->exists();
-    }
-
-    /**
-     * Blacklist this contact.
-     */
-    public function blacklist(string $reason, ?int $userId = null): void
-    {
-        $this->update([
-            'blacklisted' => true,
-            'blacklist_reason' => $reason,
-        ]);
-
-        // Log the action
-        activity()
-            ->performedOn($this)
-            ->causedBy($userId)
-            ->log("Contact blacklisted: {$reason}");
-    }
-
-    /**
-     * Remove from blacklist.
-     */
-    public function unblacklist(?int $userId = null): void
-    {
-        $this->update([
-            'blacklisted' => false,
-            'blacklist_reason' => null,
-        ]);
-
-        // Log the action
-        activity()
-            ->performedOn($this)
-            ->causedBy($userId)
-            ->log('Contact removed from blacklist');
-    }
 
     /**
      * Get display name (preferred name for UI).
