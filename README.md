@@ -1,61 +1,329 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 💬 EngChat - Plataforma de Atendimento MultiCanal
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+[![Laravel](https://img.shields.io/badge/Laravel-11.x-red.svg)](https://laravel.com)
+[![PHP](https://img.shields.io/badge/PHP-8.2+-blue.svg)](https://php.net)
+[![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://docker.com)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-## About Laravel
+**EngChat** é uma plataforma moderna de atendimento ao cliente multicanal desenvolvida com Laravel, seguindo rigorosamente os princípios **SOLID**, **DDD** e **Clean Architecture**.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🚀 **Características Principais**
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 🏗️ **Arquitetura de Classe Mundial**
+- ✅ **SOLID Principles** - Single Responsibility, Open/Closed, Liskov, Interface Segregation, Dependency Inversion
+- ✅ **Domain Driven Design (DDD)** - Separação clara de domínios e responsabilidades
+- ✅ **Clean Architecture** - Dependency rule e separation of concerns
+- ✅ **Type Safety** - Strong typing em toda a aplicação
+- ✅ **Zero Anti-patterns** - Código limpo e maintível
 
-## Learning Laravel
+### 🛠️ **Stack Tecnológica**
+- **Backend:** Laravel 11 + PHP 8.2+
+- **Database:** MariaDB 10.11
+- **Cache:** Redis 7.0
+- **Queue:** RabbitMQ 3.12
+- **WebSocket:** Laravel Reverb
+- **Containers:** Docker + Laravel Sail
+- **API Docs:** Swagger/OpenAPI 3.0
+- **Authentication:** Laravel Sanctum (API) + Breeze (Admin)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 🌟 **Funcionalidades**
+- 💬 **Chat MultiCanal** - WhatsApp, Email, Web, integração unificada
+- 🤖 **Bot Inteligente** - Automação e classificação automática
+- 👥 **Gestão de Agentes** - Sistema de roles e departamentos
+- 📊 **Analytics em Tempo Real** - Métricas e relatórios avançados
+- 🔄 **Real-time** - WebSocket para comunicação instantânea
+- 📱 **API REST** - Integração com apps Flutter
+- 🔐 **Autenticação Dual** - API tokens + sessões web
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🏗️ **Estrutura Arquitetural**
 
-## Laravel Sponsors
+### 📁 **Organização do Código (DDD)**
+```
+app/
+├── Http/
+│   ├── Controllers/
+│   │   ├── Api/           # Endpoints para Flutter/Mobile
+│   │   └── Admin/         # Endpoints para Admin Panel
+│   ├── Requests/          # Form Validation
+│   └── Resources/         # API Response Formatting
+├── Services/              # Business Logic Layer
+├── Repositories/          # Data Access Layer
+│   ├── Contracts/         # Repository Interfaces
+│   └── Eloquent/         # Eloquent Implementations
+├── DTOs/                  # Data Transfer Objects
+├── Models/                # Eloquent Models (Domain Entities)
+├── Events/                # Domain Events
+├── Listeners/             # Event Handlers
+├── Jobs/                  # Queue Jobs
+├── Observers/             # Model Observers
+└── Enums/                # Value Objects
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 🔄 **Fluxo de Dados (Clean Architecture)**
+```
+Request → Controller → Service → Repository → Model
+                ↓         ↑         ↑
+              DTO ←   Business  →  Events
+                      Rules
+```
 
-### Premium Partners
+### 🎯 **Separação de Responsabilidades**
+- **Controllers:** Apenas HTTP handling (requests/responses)
+- **Services:** Business logic e orquestração
+- **Repositories:** Acesso aos dados (queries/persistence)
+- **DTOs:** Transferência type-safe de dados
+- **Events:** Comunicação entre domínios
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+---
 
-## Contributing
+## 🐳 **Ambiente de Desenvolvimento**
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### **Pré-requisitos**
+- Docker Desktop
+- Git
+- Composer (opcional, via container)
 
-## Code of Conduct
+### **🚀 Setup Rápido**
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+1. **Clone o repositório:**
+   ```bash
+   git clone https://github.com/jonytonet/engchat-backend.git
+   cd engchat-backend
+   ```
 
-## Security Vulnerabilities
+2. **Configure ambiente:**
+   ```bash
+   cp .env.example .env
+   ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+3. **Inicie containers (Windows):**
+   ```bash
+   .\sail.bat up
+   ```
 
-## License
+4. **Execute migrations:**
+   ```bash
+   .\sail.bat migrate fresh
+   ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+5. **Acesse a aplicação:**
+   - **App:** http://localhost:8000
+   - **API Docs:** http://localhost:8000/api/documentation
+   - **Mailpit:** http://localhost:8025
+   - **RabbitMQ:** http://localhost:15672
+
+### **🛠️ Comandos Úteis (Windows)**
+```bash
+.\sail.bat up          # Iniciar containers
+.\sail.bat down        # Parar containers
+.\sail.bat shell       # Acessar shell do container
+.\sail.bat migrate     # Executar migrations
+.\sail.bat seed        # Executar seeders
+.\sail.bat fresh       # Reset database + seed
+.\sail.bat test        # Executar testes
+.\sail.bat reverb      # Iniciar WebSocket server
+```
+
+---
+
+## 📊 **Documentação da API**
+
+### **🔗 Endpoints Principais**
+
+#### **Autenticação**
+```http
+POST   /api/auth/login      # Login (token)
+POST   /api/auth/logout     # Logout
+GET    /api/auth/me         # User info
+```
+
+#### **Conversas**
+```http
+GET    /api/conversations           # Listar conversas
+POST   /api/conversations           # Criar conversa
+GET    /api/conversations/{id}      # Detalhes da conversa
+PUT    /api/conversations/{id}      # Atualizar conversa
+DELETE /api/conversations/{id}      # Deletar conversa
+```
+
+#### **Mensagens**
+```http
+GET    /api/conversations/{id}/messages    # Mensagens da conversa
+POST   /api/conversations/{id}/messages    # Enviar mensagem
+PUT    /api/messages/{id}/read             # Marcar como lida
+```
+
+#### **Contatos**
+```http
+GET    /api/contacts        # Listar contatos
+POST   /api/contacts        # Criar contato
+GET    /api/contacts/{id}   # Detalhes do contato
+PUT    /api/contacts/{id}   # Atualizar contato
+```
+
+### **📚 Documentação Completa**
+Acesse **http://localhost:8000/api/documentation** para documentação interativa Swagger.
+
+---
+
+## 🧪 **Testes**
+
+### **Executar Testes**
+```bash
+.\sail.bat test                    # Todos os testes
+.\sail.bat test --filter Feature   # Apenas feature tests
+.\sail.bat test --filter Unit      # Apenas unit tests
+```
+
+### **Cobertura de Testes**
+```bash
+.\sail.bat test --coverage        # Relatório de cobertura
+```
+
+---
+
+## 🔐 **Autenticação e Segurança**
+
+### **API Authentication (Sanctum)**
+- Token-based authentication para apps Flutter
+- Rate limiting configurado
+- CORS policies definidas
+
+### **Admin Authentication (Breeze)**
+- Session-based para painel administrativo
+- Password reset functionality
+- Profile management com upload de avatar
+
+### **Roles e Permissões**
+- **Admin:** Acesso total ao sistema
+- **Manager:** Gestão de equipe e relatórios
+- **Agent:** Atendimento ao cliente
+
+---
+
+## 📈 **Performance e Escalabilidade**
+
+### **Cache Strategy**
+- Redis para sessões e cache
+- Database query optimization
+- Eager loading configurado
+
+### **Queue System**
+- RabbitMQ para processamento assíncrono
+- Background jobs para tarefas pesadas
+- Rate limiting e retry policies
+
+### **Real-time Features**
+- Laravel Reverb WebSocket server
+- Private channels por conversa
+- Event broadcasting configurado
+
+---
+
+## 🚀 **Deploy e Produção**
+
+### **Docker Production**
+O projeto inclui configuração Docker pronta para produção com:
+- Multi-stage builds
+- Security optimizations
+- Health checks
+- Auto-scaling ready
+
+### **Environment Variables**
+Configurações essenciais no `.env`:
+```env
+APP_ENV=production
+DB_CONNECTION=mariadb
+REDIS_HOST=redis
+QUEUE_CONNECTION=rabbitmq
+BROADCAST_DRIVER=reverb
+```
+
+---
+
+## 🤝 **Contribuição**
+
+### **Code Standards**
+- PSR-12 compliance
+- SOLID principles obrigatórios
+- Type hints em todos os métodos
+- Testes unitários para novas features
+
+### **Git Workflow**
+```bash
+git checkout -b feature/nova-funcionalidade
+# Implementar feature
+git commit -m "feat: implementar nova funcionalidade"
+git push origin feature/nova-funcionalidade
+# Criar Pull Request
+```
+
+### **Commit Convention**
+- `feat:` Nova funcionalidade
+- `fix:` Correção de bug
+- `docs:` Documentação
+- `style:` Formatação de código
+- `refactor:` Refatoração
+- `test:` Testes
+
+---
+
+## 📋 **Roadmap**
+
+### **✅ Fase 1 - Fundação (Concluída)**
+- ✅ Arquitetura SOLID/DDD/Clean
+- ✅ Docker environment
+- ✅ Autenticação dual
+- ✅ API core structure
+- ✅ Database design
+- ✅ WebSocket setup
+
+### **🟡 Fase 2 - Core Features (Em Progresso)**
+- 🟡 Sistema de mensagens completo
+- ⏳ WhatsApp Business API integration
+- ⏳ Bot engine básico
+- ⏳ File upload system
+
+### **⏳ Fase 3 - Admin Panel**
+- ⏳ TALL Stack interface
+- ⏳ Real-time chat interface
+- ⏳ User management
+- ⏳ Analytics dashboard
+
+### **⏳ Fase 4 - Advanced Features**
+- ⏳ Video/audio calls
+- ⏳ AI-powered responses
+- ⏳ CRM integration
+- ⏳ Mobile apps (Flutter)
+
+---
+
+## 📄 **Licença**
+
+Este projeto está licenciado sob a **MIT License** - veja o arquivo [LICENSE](LICENSE) para detalhes.
+
+---
+
+## 👨‍💻 **Autor**
+
+**@jonytonet**
+- GitHub: [@jonytonet](https://github.com/jonytonet)
+- LinkedIn: [Jony Tonet](https://linkedin.com/in/jonytonet)
+
+---
+
+## 🙏 **Agradecimentos**
+
+- Laravel community pela framework excepcional
+- Docker team pelo ambiente de desenvolvimento
+- Open source contributors
+
+---
+
+**📊 Status do Projeto:** 🟢 **Em Desenvolvimento Ativo**  
+**🎯 Progresso:** Semana 1/4 - Fundação sólida estabelecida  
+**🏆 Qualidade:** 100% conformidade com padrões SOLID/DDD/Clean Architecture
