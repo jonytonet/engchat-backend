@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\ConversationController;
 use App\Http\Controllers\Api\WhatsAppWebhookController;
 use App\Http\Controllers\Api\WhatsAppMessageController;
+use App\Http\Controllers\Api\ProtocolController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -47,9 +48,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // TODO: Adicionar outras rotas da API
     // Route::apiResource('messages', MessageController::class);
     // Route::apiResource('contacts', ContactController::class);
-    // Route::apiResource('channels', ChannelController::class);
-
-    // WhatsApp API - Envio de mensagens (protegido)
+    // Route::apiResource('channels', ChannelController::class);    // WhatsApp API - Envio de mensagens (protegido)
     Route::prefix('whatsapp')->name('whatsapp.')->group(function () {
         Route::post('send-text', [WhatsAppMessageController::class, 'sendText'])
             ->name('send-text');
@@ -69,6 +68,26 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('status', [WhatsAppMessageController::class, 'getStatus'])
             ->name('status');
     });
+
+    // Protocols API - Gerenciamento de protocolos (protegido)
+    Route::apiResource('protocols', ProtocolController::class);
+    
+    Route::prefix('protocols')->name('protocols.')->group(function () {
+        Route::post('{protocol}/close', [ProtocolController::class, 'close'])
+            ->name('close');
+        
+        Route::post('{protocol}/reopen', [ProtocolController::class, 'reopen'])
+            ->name('reopen');
+        
+        Route::get('number/{protocolNumber}', [ProtocolController::class, 'findByNumber'])
+            ->name('find-by-number');
+        
+        Route::get('contact/{contactId}', [ProtocolController::class, 'byContact'])
+            ->name('by-contact');
+        
+        Route::get('statistics', [ProtocolController::class, 'statistics'])
+            ->name('statistics');
+    });
 });
 
 // Rotas públicas (webhook, etc)
@@ -76,10 +95,10 @@ Route::prefix('webhooks')->name('webhooks.')->group(function () {
     // WhatsApp Webhook - público (Facebook precisa acessar)
     Route::get('whatsapp', [WhatsAppWebhookController::class, 'verify'])
         ->name('whatsapp.verify');
-    
+
     Route::post('whatsapp', [WhatsAppWebhookController::class, 'handle'])
         ->name('whatsapp.handle');
-    
+
     // TODO: Implementar outros webhooks
     // Route::post('instagram', [InstagramWebhookController::class, 'handle']);
 });

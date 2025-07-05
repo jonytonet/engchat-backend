@@ -76,7 +76,6 @@ class WhatsAppWebhookController extends Controller
             ]);
 
             return response()->json(['error' => $result->error], $result->statusCode);
-
         } catch (\Exception $e) {
             Log::error('Erro crítico no webhook WhatsApp', [
                 'error' => $e->getMessage(),
@@ -94,20 +93,20 @@ class WhatsAppWebhookController extends Controller
     private function validateSignature(Request $request): bool
     {
         $secret = config('services.whatsapp.webhook_secret');
-        
+
         if (!$secret) {
             // Se não há secret configurado, pula a validação
             return true;
         }
 
         $signature = $request->header('X-Hub-Signature-256');
-        
+
         if (!$signature) {
             return false;
         }
 
         $expectedSignature = 'sha256=' . hash_hmac('sha256', $request->getContent(), $secret);
-        
+
         return hash_equals($expectedSignature, $signature);
     }
 }

@@ -39,7 +39,6 @@ class WhatsAppMessageController extends Controller
             );
 
             return response()->json($result->toArray(), $result->statusCode);
-
         } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
@@ -70,7 +69,6 @@ class WhatsAppMessageController extends Controller
             );
 
             return response()->json($result->toArray(), $result->statusCode);
-
         } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
@@ -103,7 +101,6 @@ class WhatsAppMessageController extends Controller
             );
 
             return response()->json($result->toArray(), $result->statusCode);
-
         } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
@@ -119,7 +116,7 @@ class WhatsAppMessageController extends Controller
     public function getTemplates(): JsonResponse
     {
         $result = $this->whatsAppService->getAvailableTemplates();
-        
+
         return response()->json($result->toArray(), $result->statusCode);
     }
 
@@ -129,7 +126,7 @@ class WhatsAppMessageController extends Controller
     public function getStatus(): JsonResponse
     {
         $result = $this->whatsAppService->checkConfiguration();
-        
+
         return response()->json($result->toArray(), $result->statusCode);
     }
 
@@ -144,9 +141,8 @@ class WhatsAppMessageController extends Controller
             ]);
 
             $result = $this->whatsAppService->markAsRead($validated['message_id']);
-            
-            return response()->json($result->toArray(), $result->statusCode);
 
+            return response()->json($result->toArray(), $result->statusCode);
         } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,

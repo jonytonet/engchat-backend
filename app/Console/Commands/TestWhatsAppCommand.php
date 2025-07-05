@@ -30,7 +30,7 @@ class TestWhatsAppCommand extends Command
     {
         $action = $this->argument('action');
 
-        return match($action) {
+        return match ($action) {
             'config' => $this->testConfiguration(),
             'send-text' => $this->sendTextMessage(),
             'send-template' => $this->sendTemplateMessage(),
@@ -47,7 +47,7 @@ class TestWhatsAppCommand extends Command
 
         if ($result->success) {
             $this->info('✅ Configuração válida!');
-            
+
             if ($result->data) {
                 $profile = $result->data;
                 $this->line("📱 Número: " . ($profile['display_phone_number'] ?? 'N/A'));
@@ -60,7 +60,7 @@ class TestWhatsAppCommand extends Command
 
         $this->error('❌ Erro na configuração:');
         $this->error($result->error);
-        
+
         return self::FAILURE;
     }
 
@@ -94,7 +94,7 @@ class TestWhatsAppCommand extends Command
 
         $this->error('❌ Erro ao enviar mensagem:');
         $this->error($result->error);
-        
+
         return self::FAILURE;
     }
 
@@ -128,7 +128,7 @@ class TestWhatsAppCommand extends Command
 
         $this->error('❌ Erro ao enviar template:');
         $this->error($result->error);
-        
+
         return self::FAILURE;
     }
 
@@ -140,7 +140,7 @@ class TestWhatsAppCommand extends Command
 
         if ($result->success) {
             $templates = $result->data['data'] ?? [];
-            
+
             if (empty($templates)) {
                 $this->warn('⚠️ Nenhum template encontrado');
                 return self::SUCCESS;
@@ -154,14 +154,14 @@ class TestWhatsAppCommand extends Command
                 $this->line("   Status: {$template['status']}");
                 $this->line("   Categoria: {$template['category']}");
                 $this->line("   Idioma: {$template['language']}");
-                
+
                 if (!empty($template['components'])) {
                     $this->line("   Componentes:");
                     foreach ($template['components'] as $component) {
                         $this->line("     - {$component['type']}");
                     }
                 }
-                
+
                 $this->line('');
             }
 
@@ -170,7 +170,7 @@ class TestWhatsAppCommand extends Command
 
         $this->error('❌ Erro ao obter templates:');
         $this->error($result->error);
-        
+
         return self::FAILURE;
     }
 

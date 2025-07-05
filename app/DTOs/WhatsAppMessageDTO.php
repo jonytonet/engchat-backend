@@ -32,8 +32,8 @@ readonly class WhatsAppMessageDTO
     }
 
     public static function createTemplateMessage(
-        string $to, 
-        string $templateName, 
+        string $to,
+        string $templateName,
         array $components = []
     ): self {
         return new self(

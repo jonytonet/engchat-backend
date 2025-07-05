@@ -59,7 +59,7 @@ final readonly class ContactQueryService
     public function findByPhoneAsDTO(string $phoneNumber): ?ContactDTO
     {
         $contact = $this->findByPhone($phoneNumber);
-        
+
         return $contact ? ContactDTO::fromModel($contact) : null;
     }
 }

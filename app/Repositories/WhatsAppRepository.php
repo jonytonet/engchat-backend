@@ -112,7 +112,7 @@ class WhatsAppRepository
     {
         $businessAccountId = config('services.whatsapp.business_account_id', env('WHATSAPP_BUSINESS_ACCOUNT_ID'));
         $endpoint = "{$businessAccountId}/message_templates";
-        
+
         return $this->makeApiCall($endpoint, [], 'GET');
     }
 
@@ -123,7 +123,7 @@ class WhatsAppRepository
     {
         $endpoint = $this->phoneNumberId;
         $params = ['fields' => 'display_phone_number,verified_name,quality_rating'];
-        
+
         return $this->makeApiCall($endpoint, $params, 'GET');
     }
 
@@ -158,12 +158,12 @@ class WhatsAppRepository
     {
         // Remove caracteres não numéricos
         $phone = preg_replace('/[^0-9]/', '', $phoneNumber);
-        
+
         // Se não tem código do país, adiciona Brasil (55)
         if (strlen($phone) === 11 && substr($phone, 0, 1) !== '55') {
             $phone = '55' . $phone;
         }
-        
+
         return $phone;
     }
 
@@ -173,7 +173,7 @@ class WhatsAppRepository
     private function makeApiCall(string $endpoint, array $data = [], string $method = 'POST'): Response
     {
         $url = "{$this->apiUrl}/{$this->apiVersion}/{$endpoint}";
-        
+
         try {
             $request = Http::withToken($this->accessToken)
                 ->withHeaders([
@@ -198,7 +198,6 @@ class WhatsAppRepository
             ]);
 
             return $response;
-
         } catch (RequestException $e) {
             Log::channel('whatsapp')->error('WhatsApp API Error', [
                 'method' => $method,
@@ -207,7 +206,7 @@ class WhatsAppRepository
                 'error' => $e->getMessage(),
                 'response' => $e->response?->json()
             ]);
-            
+
             throw $e;
         }
     }
@@ -218,19 +217,19 @@ class WhatsAppRepository
     public function validateConfiguration(): array
     {
         $errors = [];
-        
+
         if (empty($this->apiUrl)) {
             $errors[] = 'WHATSAPP_API_URL não configurada';
         }
-        
+
         if (empty($this->accessToken)) {
             $errors[] = 'WHATSAPP_ACCESS_TOKEN não configurado';
         }
-        
+
         if (empty($this->phoneNumberId)) {
             $errors[] = 'WHATSAPP_PHONE_NUMBER_ID não configurado';
         }
-        
+
         return $errors;
     }
 }

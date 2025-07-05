@@ -56,22 +56,20 @@ class WhatsAppService
             }
 
             return $result;
-
         } catch (\InvalidArgumentException $e) {
             Log::warning('WhatsApp: Validação falhou', [
                 'phone' => $phoneNumber,
                 'error' => $e->getMessage()
             ]);
-            
-            return WhatsAppResponseDTO::error($e->getMessage(), 'VALIDATION_ERROR', 422);
 
+            return WhatsAppResponseDTO::error($e->getMessage(), 'VALIDATION_ERROR', 422);
         } catch (RequestException $e) {
             Log::error('WhatsApp: Erro na API', [
                 'phone' => $phoneNumber,
                 'error' => $e->getMessage(),
                 'response' => $e->response?->json()
             ]);
-            
+
             return WhatsAppResponseDTO::error(
                 'Erro ao enviar mensagem WhatsApp',
                 'API_ERROR',
@@ -84,8 +82,8 @@ class WhatsAppService
      * Envia mensagem com template
      */
     public function sendTemplateMessage(
-        string $phoneNumber, 
-        string $templateName, 
+        string $phoneNumber,
+        string $templateName,
         array $components = [],
         ?int $conversationId = null
     ): WhatsAppResponseDTO {
@@ -108,7 +106,6 @@ class WhatsAppService
             }
 
             return $result;
-
         } catch (\InvalidArgumentException $e) {
             return WhatsAppResponseDTO::error($e->getMessage(), 'VALIDATION_ERROR', 422);
         } catch (RequestException $e) {
@@ -151,7 +148,6 @@ class WhatsAppService
             }
 
             return $result;
-
         } catch (\InvalidArgumentException $e) {
             return WhatsAppResponseDTO::error($e->getMessage(), 'VALIDATION_ERROR', 422);
         } catch (RequestException $e) {
@@ -187,10 +183,9 @@ class WhatsAppService
             DB::commit();
 
             return WhatsAppResponseDTO::success(['processed' => true]);
-
         } catch (\Exception $e) {
             DB::rollBack();
-            
+
             Log::error('WhatsApp: Erro ao processar webhook', [
                 'data' => $webhookData,
                 'error' => $e->getMessage()
@@ -208,7 +203,6 @@ class WhatsAppService
         try {
             $response = $this->whatsAppRepository->markMessageAsRead($messageId);
             return $this->processApiResponse($response);
-
         } catch (RequestException $e) {
             return WhatsAppResponseDTO::error(
                 'Erro ao marcar como lida',
@@ -226,7 +220,6 @@ class WhatsAppService
         try {
             $response = $this->whatsAppRepository->getTemplates();
             return $this->processApiResponse($response);
-
         } catch (RequestException $e) {
             return WhatsAppResponseDTO::error(
                 'Erro ao obter templates',
@@ -242,7 +235,7 @@ class WhatsAppService
     public function checkConfiguration(): WhatsAppResponseDTO
     {
         $errors = $this->whatsAppRepository->validateConfiguration();
-        
+
         if (!empty($errors)) {
             return WhatsAppResponseDTO::error(
                 'Configuração incompleta: ' . implode(', ', $errors),
@@ -254,7 +247,6 @@ class WhatsAppService
         try {
             $response = $this->whatsAppRepository->getBusinessProfile();
             return $this->processApiResponse($response);
-
         } catch (RequestException $e) {
             return WhatsAppResponseDTO::error(
                 'Erro ao verificar configuração',
@@ -272,7 +264,7 @@ class WhatsAppService
         if ($response->successful()) {
             $data = $response->json();
             $messageId = $data['messages'][0]['id'] ?? null;
-            
+
             return WhatsAppResponseDTO::success($data, $messageId);
         }
 
@@ -300,8 +292,8 @@ class WhatsAppService
             }
 
             // Busca ou cria conversa
-            $conversation = $conversationId ? 
-                Conversation::find($conversationId) : 
+            $conversation = $conversationId ?
+                Conversation::find($conversationId) :
                 $this->findOrCreateConversation($contact->id);
 
             // Salva mensagem
@@ -316,7 +308,6 @@ class WhatsAppService
                 'status' => 'sent',
                 'metadata' => json_encode($messageDto->toArray())
             ]);
-
         } catch (\Exception $e) {
             Log::error('WhatsApp: Erro ao salvar mensagem', [
                 'message_dto' => $messageDto->toArray(),
@@ -345,7 +336,7 @@ class WhatsAppService
     private function saveIncomingMessage(array $messageData, array $metadata): void
     {
         $phoneNumber = $messageData['from'];
-        
+
         // Busca ou cria contato
         $contact = $this->contactQueryService->findByPhone($phoneNumber);
         if (!$contact) {
@@ -449,7 +440,7 @@ class WhatsAppService
 
     private function getMessageContentForStorage(WhatsAppMessageDTO $messageDto): string
     {
-        return match($messageDto->type) {
+        return match ($messageDto->type) {
             'text' => $messageDto->content,
             'template' => "Template: {$messageDto->templateName}",
             'image', 'video', 'audio', 'document' => $messageDto->mediaUrl,
@@ -459,7 +450,7 @@ class WhatsAppService
 
     private function extractMessageContent(array $messageData): string
     {
-        return match($messageData['type']) {
+        return match ($messageData['type']) {
             'text' => $messageData['text']['body'],
             'image' => $messageData['image']['caption'] ?? '[Imagem]',
             'video' => $messageData['video']['caption'] ?? '[Vídeo]',
