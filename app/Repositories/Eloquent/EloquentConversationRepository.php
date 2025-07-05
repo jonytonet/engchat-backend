@@ -9,74 +9,63 @@ use App\DTOs\CreateConversationDTO;
 use App\Enums\ConversationStatus;
 use App\Enums\Priority;
 use App\Models\Conversation;
-use App\Repositories\BaseRepository;
 use App\Repositories\Contracts\ConversationRepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Container\Container as Application;
-use Illuminate\Http\Request as HttpRequest;
-use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class EloquentConversationRepository implements ConversationRepositoryInterface
 {
     /**
-     * @var BaseRepository
+     * Campos pesquisáveis para filtros
      */
-    protected $baseRepository;
+    private array $searchableFields = [
+        'status',
+        'priority',
+        'subject',
+        'contact_id',
+        'channel_id',
+        'category_id',
+        'assigned_to'
+    ];
 
-    public function __construct(Application $app)
-    {
-        $this->baseRepository = new class($app) extends BaseRepository {
-            protected $fieldSearchable = [
-                'status',
-                'priority',
-                'subject',
-                'contact_id',
-                'channel_id',
-                'category_id',
-                'assigned_to'
-            ];
-
-            public function getFieldsSearchable(): array
-            {
-                return $this->fieldSearchable;
-            }
-
-            public function model(): string
-            {
-                return Conversation::class;
-            }
-        };
-    }
+    public function __construct(
+        private Conversation $model
+    ) {}
 
     public function find(int $id): ?ConversationDTO
     {
-        $conversation = $this->baseRepository->find($id);
+        $conversation = $this->model->find($id);
 
         return $conversation ? ConversationDTO::fromModel($conversation) : null;
     }
 
     public function create(CreateConversationDTO $dto): ConversationDTO
     {
-        $conversation = $this->baseRepository->create($dto->toArray());
+        $conversation = $this->model->create($dto->toArray());
 
-        return ConversationDTO::fromModel($conversation->fresh());
+        return ConversationDTO::fromModel($conversation);
     }
 
     public function update(int $id, array $data): ConversationDTO
     {
-        $conversation = $this->baseRepository->update($data, $id);
+        /** @var Conversation $conversation */
+        $conversation = $this->model->findOrFail($id);
+        $conversation->update($data);
+        $conversation->refresh();
 
-        return ConversationDTO::fromModel($conversation->fresh());
+        return ConversationDTO::fromModel($conversation);
     }
 
     public function delete(int $id): bool
     {
-        return $this->baseRepository->delete($id);
+        return $this->model->destroy($id) > 0;
     }
 
     public function findActiveByContact(int $contactId): ?ConversationDTO
     {
-        $conversation = Conversation::where('contact_id', $contactId)
+        $conversation = $this->model
+            ->where('contact_id', $contactId)
             ->whereIn('status', [ConversationStatus::OPEN, ConversationStatus::ASSIGNED])
             ->first();
 
@@ -85,73 +74,88 @@ class EloquentConversationRepository implements ConversationRepositoryInterface
 
     public function findByChannel(int $channelId): array
     {
-        $conversations = Conversation::where('channel_id', $channelId)->get();
+        $conversations = $this->model
+            ->where('channel_id', $channelId)
+            ->get();
 
         return $conversations->map(fn($conv) => ConversationDTO::fromModel($conv))->toArray();
     }
 
     public function findByStatus(ConversationStatus $status): array
     {
-        $conversations = Conversation::where('status', $status)->get();
+        $conversations = $this->model
+            ->where('status', $status)
+            ->get();
 
         return $conversations->map(fn($conv) => ConversationDTO::fromModel($conv))->toArray();
     }
 
     public function findByPriority(Priority $priority): array
     {
-        $conversations = Conversation::where('priority', $priority)->get();
+        $conversations = $this->model
+            ->where('priority', $priority)
+            ->get();
 
         return $conversations->map(fn($conv) => ConversationDTO::fromModel($conv))->toArray();
     }
 
     public function findByAgent(int $agentId): array
     {
-        $conversations = Conversation::where('assigned_to', $agentId)->get();
+        $conversations = $this->model
+            ->where('assigned_to', $agentId)
+            ->get();
 
         return $conversations->map(fn($conv) => ConversationDTO::fromModel($conv))->toArray();
     }
 
     public function assignToAgent(int $conversationId, int $agentId): ConversationDTO
     {
-        $conversation = Conversation::findOrFail($conversationId);
+        /** @var Conversation $conversation */
+        $conversation = $this->model->findOrFail($conversationId);
 
         $conversation->update([
             'assigned_to' => $agentId,
             'status' => ConversationStatus::ASSIGNED,
         ]);
+        $conversation->refresh();
 
-        return ConversationDTO::fromModel($conversation->fresh());
+        return ConversationDTO::fromModel($conversation);
     }
 
     public function close(int $conversationId, int $closedBy): ConversationDTO
     {
-        $conversation = Conversation::findOrFail($conversationId);
+        /** @var Conversation $conversation */
+        $conversation = $this->model->findOrFail($conversationId);
 
         $conversation->update([
             'status' => ConversationStatus::CLOSED,
             'closed_by' => $closedBy,
             'closed_at' => now(),
         ]);
+        $conversation->refresh();
 
-        return ConversationDTO::fromModel($conversation->fresh());
+        return ConversationDTO::fromModel($conversation);
     }
 
     public function reopen(int $conversationId): ConversationDTO
     {
-        $conversation = Conversation::findOrFail($conversationId);
+        /** @var Conversation $conversation */
+        $conversation = $this->model->findOrFail($conversationId);
 
         $conversation->update([
             'status' => ConversationStatus::OPEN,
             'closed_by' => null,
             'closed_at' => null,
         ]);
+        $conversation->refresh();
 
-        return ConversationDTO::fromModel($conversation->fresh());
+        return ConversationDTO::fromModel($conversation);
     }
 
     public function updateLastMessage(int $conversationId): void
     {
-        $conversation = Conversation::findOrFail($conversationId);
+        /** @var Conversation $conversation */
+        $conversation = $this->model->findOrFail($conversationId);
 
         $conversation->update([
             'last_message_at' => now(),
@@ -160,60 +164,100 @@ class EloquentConversationRepository implements ConversationRepositoryInterface
 
     public function paginate(int $perPage = 15, array $filters = []): LengthAwarePaginator
     {
-        return $this->baseRepository->paginateWithFilters($perPage, $filters);
+        $query = $this->applyFilters($this->model->newQuery(), $filters);
+
+        return $query->paginate($perPage);
     }
 
     public function getStatistics(): array
     {
         return [
-            'total' => Conversation::count(),
-            'open' => Conversation::where('status', ConversationStatus::OPEN)->count(),
-            'assigned' => Conversation::where('status', ConversationStatus::ASSIGNED)->count(),
-            'closed' => Conversation::where('status', ConversationStatus::CLOSED)->count(),
-            'today' => Conversation::whereDate('created_at', today())->count(),
+            'total' => $this->model->count(),
+            'open' => $this->model->where('status', ConversationStatus::OPEN)->count(),
+            'assigned' => $this->model->where('status', ConversationStatus::ASSIGNED)->count(),
+            'closed' => $this->model->where('status', ConversationStatus::CLOSED)->count(),
+            'today' => $this->model->whereDate('created_at', today())->count(),
         ];
     }
 
     public function findOldConversations(int $daysOld = 7): array
     {
-        $conversations = Conversation::where('last_message_at', '<', now()->subDays($daysOld))
+        $conversations = $this->model
+            ->where('last_message_at', '<', now()->subDays($daysOld))
             ->whereNotIn('status', [ConversationStatus::CLOSED, ConversationStatus::ARCHIVED])
             ->get();
 
         return $conversations->map(fn($conv) => ConversationDTO::fromModel($conv))->toArray();
     }
 
-    /**
-     * Métodos para busca avançada usando BaseRepository
-     */
-    public function advancedSearch(HttpRequest $request, array $relations = []): mixed
+    public function advancedSearch(\Illuminate\Http\Request $request, array $relations = []): mixed
     {
-        return $this->baseRepository->advancedSearch($request, $relations);
+        $query = $this->model->newQuery();
+
+        // Aplicar filtros básicos
+        $filters = $request->only($this->searchableFields);
+        $query = $this->applyFilters($query, $filters);
+
+        // Carregar relacionamentos
+        if (!empty($relations)) {
+            $query->with($relations);
+        }
+
+        // Busca por texto se fornecido
+        if ($search = $request->get('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('subject', 'like', "%{$search}%")
+                    ->orWhereHas('contact', function ($contact) use ($search) {
+                        $contact->where('name', 'like', "%{$search}%")
+                            ->orWhere('phone', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        return $query->paginate($request->get('per_page', 15));
     }
 
     public function searchWithFilters(array $filters, array $relations = []): mixed
     {
-        return $this->baseRepository->findAllFieldsAnd(
-            new HttpRequest($filters),
-            $relations
-        );
+        $query = $this->model->newQuery();
+
+        $query = $this->applyFilters($query, $filters);
+
+        if (!empty($relations)) {
+            $query->with($relations);
+        }
+
+        return $query->get();
     }
 
-    public function autocompleteSearch(HttpRequest $request, array $select = [], array $conditions = []): mixed
+    public function autocompleteSearch(\Illuminate\Http\Request $request, array $select = [], array $conditions = []): mixed
     {
-        return $this->baseRepository->autocompleteSearch($request, $select, $conditions);
+        $query = $this->model->newQuery();
+
+        if (!empty($select)) {
+            $query->select($select);
+        }
+
+        if ($search = $request->get('q')) {
+            $query->where(function ($q) use ($search, $conditions) {
+                foreach ($conditions as $field) {
+                    $q->orWhere($field, 'like', "%{$search}%");
+                }
+            });
+        }
+
+        return $query->limit(20)->get();
     }
 
     public function batchUpdate(array $ids, array $data): bool
     {
-        $result = $this->baseRepository->updateBatch($ids, $data);
-        return $result > 0;
+        $affected = $this->model->whereIn('id', $ids)->update($data);
+        return $affected > 0;
     }
 
     public function getStatsByDateRange(string $startDate, string $endDate): array
     {
-        $conversations = $this->baseRepository
-            ->allQuery()
+        $conversations = $this->model
             ->whereBetween('created_at', [$startDate, $endDate])
             ->get();
 
@@ -226,10 +270,20 @@ class EloquentConversationRepository implements ConversationRepositoryInterface
     }
 
     /**
-     * Delegar métodos do BaseRepository
+     * Aplica filtros na query
      */
-    public function __call($method, $arguments)
+    private function applyFilters(Builder $query, array $filters): Builder
     {
-        return $this->baseRepository->$method(...$arguments);
+        foreach ($filters as $field => $value) {
+            if (in_array($field, $this->searchableFields) && $value !== null) {
+                if (is_array($value)) {
+                    $query->whereIn($field, $value);
+                } else {
+                    $query->where($field, $value);
+                }
+            }
+        }
+
+        return $query;
     }
 }

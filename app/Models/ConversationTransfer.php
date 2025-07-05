@@ -9,7 +9,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
- * @OA\Schema(
+ * 
+ *
+ * @OA\Schema (
  *     schema="ConversationTransfer",
  *     type="object",
  *     title="Conversation Transfer",
@@ -26,6 +28,45 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *     @OA\Property(property="created_at", type="string", format="date-time"),
  *     @OA\Property(property="updated_at", type="string", format="date-time")
  * )
+ * @property int $id
+ * @property int $conversation_id
+ * @property int|null $from_user_id
+ * @property int $to_user_id
+ * @property string $reason
+ * @property string|null $notes
+ * @property string $status
+ * @property \Illuminate\Support\Carbon $transferred_at
+ * @property \Illuminate\Support\Carbon|null $accepted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Conversation $conversation
+ * @property-read \App\Models\User|null $fromUser
+ * @property-read bool $is_accepted
+ * @property-read bool $is_pending
+ * @property-read bool $is_rejected
+ * @property-read string $reason_label
+ * @property-read string $status_label
+ * @property-read \App\Models\User $toUser
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConversationTransfer accepted()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConversationTransfer byUser(int $userId)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConversationTransfer newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConversationTransfer newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConversationTransfer pending()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConversationTransfer query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConversationTransfer recent(int $days = 30)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConversationTransfer rejected()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConversationTransfer whereAcceptedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConversationTransfer whereConversationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConversationTransfer whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConversationTransfer whereFromUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConversationTransfer whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConversationTransfer whereNotes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConversationTransfer whereReason($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConversationTransfer whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConversationTransfer whereToUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConversationTransfer whereTransferredAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ConversationTransfer whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class ConversationTransfer extends Model
 {

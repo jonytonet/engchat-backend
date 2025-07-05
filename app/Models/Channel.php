@@ -9,7 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @OA\Schema(
+ * 
+ *
+ * @OA\Schema (
  *     schema="Channel",
  *     title="Channel",
  *     description="Model representing a communication channel (WhatsApp, Telegram, etc.)",
@@ -25,6 +27,36 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *     @OA\Property(property="created_at", type="string", format="date-time", description="Creation timestamp"),
  *     @OA\Property(property="updated_at", type="string", format="date-time", description="Last update timestamp")
  * )
+ * @property int $id
+ * @property string $name
+ * @property string $type
+ * @property array<array-key, mixed>|null $configuration
+ * @property bool $is_active
+ * @property int $priority
+ * @property array<array-key, mixed>|null $working_hours
+ * @property bool $auto_response_enabled
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Conversation> $conversations
+ * @property-read int|null $conversations_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Channel active()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Channel byPriority()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Channel byType(string $type)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Channel newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Channel newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Channel query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Channel whereAutoResponseEnabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Channel whereConfiguration($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Channel whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Channel whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Channel whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Channel whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Channel wherePriority($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Channel whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Channel whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Channel whereWorkingHours($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Channel withAutoResponse()
+ * @mixin \Eloquent
  */
 
 class Channel extends Model

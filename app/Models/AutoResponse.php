@@ -9,7 +9,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
- * @OA\Schema(
+ * 
+ *
+ * @OA\Schema (
  *     schema="AutoResponse",
  *     type="object",
  *     title="Auto Response",
@@ -33,6 +35,56 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *     @OA\Property(property="created_at", type="string", format="date-time"),
  *     @OA\Property(property="updated_at", type="string", format="date-time")
  * )
+ * @property int $id
+ * @property int|null $category_id
+ * @property string $name
+ * @property string $trigger_type
+ * @property string|null $trigger_keyword
+ * @property array<array-key, mixed>|null $trigger_conditions
+ * @property string $response_text
+ * @property string $response_type
+ * @property array<array-key, mixed>|null $response_data Additional data for template/redirect
+ * @property int $delay_seconds
+ * @property array<array-key, mixed>|null $working_hours
+ * @property array<array-key, mixed>|null $conditions Additional conditions for triggering
+ * @property bool $is_active
+ * @property int $usage_count
+ * @property numeric $success_rate
+ * @property int $priority
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Category|null $category
+ * @property-read string $priority_label
+ * @property-read string $response_type_label
+ * @property-read string $trigger_type_label
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AutoResponse active()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AutoResponse byCategory(int $categoryId)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AutoResponse byKeyword(string $keyword)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AutoResponse byTriggerType(string $type)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AutoResponse highPriority(int $minPriority = 3)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AutoResponse newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AutoResponse newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AutoResponse orderByPriority()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AutoResponse query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AutoResponse whereCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AutoResponse whereConditions($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AutoResponse whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AutoResponse whereDelaySeconds($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AutoResponse whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AutoResponse whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AutoResponse whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AutoResponse wherePriority($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AutoResponse whereResponseData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AutoResponse whereResponseText($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AutoResponse whereResponseType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AutoResponse whereSuccessRate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AutoResponse whereTriggerConditions($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AutoResponse whereTriggerKeyword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AutoResponse whereTriggerType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AutoResponse whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AutoResponse whereUsageCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AutoResponse whereWorkingHours($value)
+ * @mixin \Eloquent
  */
 class AutoResponse extends Model
 {

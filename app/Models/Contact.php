@@ -11,7 +11,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * @OA\Schema(
+ * 
+ *
+ * @OA\Schema (
  *     schema="Contact",
  *     title="Contact",
  *     description="Model representing a customer contact",
@@ -34,6 +36,69 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *     @OA\Property(property="created_at", type="string", format="date-time", description="Creation timestamp"),
  *     @OA\Property(property="updated_at", type="string", format="date-time", description="Last update timestamp")
  * )
+ * @property int $id
+ * @property string $name
+ * @property string|null $email
+ * @property string|null $phone
+ * @property string|null $avatar
+ * @property string $display_name
+ * @property string|null $company
+ * @property string|null $document
+ * @property array<array-key, mixed>|null $tags
+ * @property string|null $metadata
+ * @property string|null $blocked_at
+ * @property string|null $last_interaction_at
+ * @property string $priority
+ * @property bool $blacklisted
+ * @property string|null $blacklist_reason
+ * @property string $preferred_language
+ * @property string $timezone
+ * @property \Illuminate\Support\Carbon|null $last_interaction
+ * @property int $total_interactions
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Conversation> $activeConversations
+ * @property-read int|null $active_conversations_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Conversation> $conversations
+ * @property-read int|null $conversations_count
+ * @property-read \App\Models\Conversation|null $latestConversation
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Message> $messages
+ * @property-read int|null $messages_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact blacklisted()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact byPriority(string $priority)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact notBlacklisted()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact search(string $search)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact vip()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact whereAvatar($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact whereBlacklistReason($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact whereBlacklisted($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact whereBlockedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact whereCompany($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact whereDisplayName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact whereDocument($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact whereLastInteraction($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact whereLastInteractionAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact whereMetadata($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact wherePhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact wherePreferredLanguage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact wherePriority($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact whereTags($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact whereTimezone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact whereTotalInteractions($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Contact withoutTrashed()
+ * @mixin \Eloquent
  */
 
 class Contact extends Model
@@ -60,6 +125,7 @@ class Contact extends Model
         'timezone',
         'last_interaction',
         'total_interactions',
+        'businesspartner_id',
     ];
 
     /**
@@ -152,11 +218,11 @@ class Contact extends Model
     {
         return $query->where(function ($q) use ($search) {
             $q->where('name', 'like', "%{$search}%")
-              ->orWhere('email', 'like', "%{$search}%")
-              ->orWhere('phone', 'like', "%{$search}%")
-              ->orWhere('display_name', 'like', "%{$search}%")
-              ->orWhere('company', 'like', "%{$search}%")
-              ->orWhere('document', 'like', "%{$search}%");
+                ->orWhere('email', 'like', "%{$search}%")
+                ->orWhere('phone', 'like', "%{$search}%")
+                ->orWhere('display_name', 'like', "%{$search}%")
+                ->orWhere('company', 'like', "%{$search}%")
+                ->orWhere('document', 'like', "%{$search}%");
         });
     }
 
@@ -170,6 +236,14 @@ class Contact extends Model
         return $this->blacklisted;
     }
 
+    /**
+     * Check if contact is VIP.
+     */
+    public function isVip(): bool
+    {
+        return $this->priority === 'urgent' ||
+            (is_array($this->tags) && in_array('vip', $this->tags));
+    }
 
     /**
      * Get display name (preferred name for UI).
@@ -177,69 +251,6 @@ class Contact extends Model
     public function getDisplayNameAttribute(): string
     {
         return $this->display_name ?? $this->name ?? $this->phone ?? 'Unknown';
-    }
-
-    /**
-     * Update last interaction timestamp.
-     */
-    public function updateLastInteraction(): void
-    {
-        $this->update([
-            'last_interaction' => now(),
-            'total_interactions' => $this->total_interactions + 1,
-        ]);
-    }
-
-    /**
-     * Add tag to contact.
-     */
-    public function addTag(string $tag): void
-    {
-        $tags = $this->tags ?? [];
-
-        if (!in_array($tag, $tags)) {
-            $tags[] = $tag;
-            $this->tags = $tags;
-            $this->save();
-        }
-    }
-
-    /**
-     * Remove tag from contact.
-     */
-    public function removeTag(string $tag): void
-    {
-        if (!$this->tags) {
-            return;
-        }
-
-        $tags = array_filter($this->tags, function ($t) use ($tag) {
-            return $t !== $tag;
-        });
-
-        $this->tags = array_values($tags);
-        $this->save();
-    }
-
-    /**
-     * Get contact statistics.
-     */
-    public function getStats(): array
-    {
-        return [
-            'total_conversations' => $this->conversations()->count(),
-            'open_conversations' => $this->conversations()->where('status', 'open')->count(),
-            'pending_conversations' => $this->conversations()->where('status', 'pending')->count(),
-            'closed_conversations' => $this->conversations()->where('status', 'closed')->count(),
-            'total_messages' => $this->messages()->count(),
-            'avg_satisfaction' => $this->conversations()
-                ->whereNotNull('satisfaction_rating')
-                ->avg('satisfaction_rating'),
-            'last_interaction' => $this->last_interaction,
-            'total_interactions' => $this->total_interactions,
-            'is_vip' => $this->isVip(),
-            'is_blacklisted' => $this->isBlacklisted(),
-        ];
     }
 
     /**
@@ -256,5 +267,23 @@ class Contact extends Model
         }
 
         return 'web';
+    }
+
+    // ===== ERP INTEGRATION ATTRIBUTES =====
+
+    /**
+     * Check if contact has business partner integration.
+     */
+    public function hasBusinessPartnerIntegration(): bool
+    {
+        return !empty($this->businesspartner_id);
+    }
+
+    /**
+     * Get the business partner identifier.
+     */
+    public function getBusinessPartnerId(): ?string
+    {
+        return $this->businesspartner_id;
     }
 }

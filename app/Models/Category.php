@@ -12,7 +12,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * @OA\Schema(
+ * 
+ *
+ * @OA\Schema (
  *     schema="Category",
  *     title="Category",
  *     description="Model representing a conversation category for classification and routing",
@@ -30,6 +32,56 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *     @OA\Property(property="created_at", type="string", format="date-time", description="Creation timestamp"),
  *     @OA\Property(property="updated_at", type="string", format="date-time", description="Last update timestamp")
  * )
+ * @property int $id
+ * @property string $name
+ * @property string|null $description
+ * @property string $color
+ * @property int|null $parent_id
+ * @property int $priority
+ * @property int|null $estimated_time Tempo estimado em minutos
+ * @property array<array-key, mixed>|null $auto_responses
+ * @property bool $requires_specialist
+ * @property bool $is_active
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\AutoResponse> $autoResponses
+ * @property-read int|null $auto_responses_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Category> $children
+ * @property-read int|null $children_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Conversation> $conversations
+ * @property-read int|null $conversations_count
+ * @property-read string $full_path
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CategoryKeyword> $keywords
+ * @property-read int|null $keywords_count
+ * @property-read Category|null $parent
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $specialists
+ * @property-read int|null $specialists_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
+ * @property-read int|null $users_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category active()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category byPriority(int $priority)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category byPriorityOrder()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category requiresSpecialist()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category root()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereAutoResponses($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereColor($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereEstimatedTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereParentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category wherePriority($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereRequiresSpecialist($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Category withoutTrashed()
+ * @mixin \Eloquent
  */
 
 class Category extends Model

@@ -14,6 +14,7 @@ use App\Services\MessageAttachmentService;
 use App\Services\ConversationTransferService;
 use App\Services\BotClassificationService;
 use App\Services\AutoResponseService;
+use App\Services\ErpIntegrationService;
 use App\Models\MessageAttachment;
 use App\Observers\MessageAttachmentObserver;
 use Illuminate\Support\ServiceProvider;
@@ -43,11 +44,28 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(ConversationTransferService::class);
         $this->app->singleton(BotClassificationService::class);
         $this->app->singleton(AutoResponseService::class);
+        $this->app->singleton(ErpIntegrationService::class);
 
-        // TODO: Adicionar outros bindings conforme necessário
-        // MessageRepositoryInterface::class => EloquentMessageRepository::class
-        // ChannelRepositoryInterface::class => EloquentChannelRepository::class
-        // CategoryRepositoryInterface::class => EloquentCategoryRepository::class
+        // TODO: Implementar repositories restantes quando necessário
+        // $this->app->bind(
+        //     MessageRepositoryInterface::class,
+        //     EloquentMessageRepository::class
+        // );
+
+        // $this->app->bind(
+        //     ChannelRepositoryInterface::class,
+        //     EloquentChannelRepository::class
+        // );
+
+        // $this->app->bind(
+        //     CategoryRepositoryInterface::class,
+        //     EloquentCategoryRepository::class
+        // );
+
+        // $this->app->bind(
+        //     UserRepositoryInterface::class,
+        //     EloquentUserRepository::class
+        // );
     }
 
     /**

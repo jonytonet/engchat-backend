@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @OA\Schema(
+ * 
+ *
+ * @OA\Schema (
  *     schema="Role",
  *     title="Role",
  *     description="Model representing a user role with permissions and chat limits",
@@ -22,6 +24,32 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *     @OA\Property(property="created_at", type="string", format="date-time", description="Creation timestamp"),
  *     @OA\Property(property="updated_at", type="string", format="date-time", description="Last update timestamp")
  * )
+ * @property int $id
+ * @property string $name
+ * @property string|null $description
+ * @property array<array-key, mixed>|null $permissions
+ * @property bool $can_transfer
+ * @property bool $can_close_tickets
+ * @property int $max_simultaneous_chats
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
+ * @property-read int|null $users_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Role canCloseTickets()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Role canTransfer()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Role newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Role newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Role query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Role whereCanCloseTickets($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Role whereCanTransfer($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Role whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Role whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Role whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Role whereMaxSimultaneousChats($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Role whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Role wherePermissions($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Role whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Role extends Model
 {

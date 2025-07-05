@@ -25,6 +25,7 @@ readonly class ContactDTO
         public string $timezone,
         public ?\DateTime $lastInteraction,
         public int $totalInteractions,
+        public ?string $businessPartnerId,
         public \DateTime $createdAt,
         public \DateTime $updatedAt,
         public ?\DateTime $deletedAt = null
@@ -48,6 +49,7 @@ readonly class ContactDTO
             timezone: $contact->timezone,
             lastInteraction: $contact->last_interaction,
             totalInteractions: $contact->total_interactions,
+            businessPartnerId: $contact->businesspartner_id,
             createdAt: $contact->created_at,
             updatedAt: $contact->updated_at,
             deletedAt: $contact->deleted_at
@@ -73,6 +75,7 @@ readonly class ContactDTO
             'timezone' => $this->timezone,
             'last_interaction' => $this->lastInteraction?->format('Y-m-d H:i:s'),
             'total_interactions' => $this->totalInteractions,
+            'businesspartner_id' => $this->businessPartnerId,
             'created_at' => $this->createdAt->format('Y-m-d H:i:s'),
             'updated_at' => $this->updatedAt->format('Y-m-d H:i:s'),
             'deleted_at' => $this->deletedAt?->format('Y-m-d H:i:s'),

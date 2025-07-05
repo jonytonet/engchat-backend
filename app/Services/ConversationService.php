@@ -36,10 +36,12 @@ class ConversationService
     /**
      * Busca conversas com filtros avançados
      */
-    public function searchConversations(Request $request): mixed
+    public function searchConversations(array $filters = [], array $relations = []): mixed
     {
-        $relations = ['contact', 'category', 'channel'];
-        return $this->conversationRepository->advancedSearch($request, $relations);
+        $defaultRelations = ['contact', 'category', 'channel'];
+        $relations = array_merge($defaultRelations, $relations);
+
+        return $this->conversationRepository->searchWithFilters($filters, $relations);
     }
 
     /**
@@ -53,11 +55,14 @@ class ConversationService
     /**
      * Autocomplete para conversas
      */
-    public function autocompleteConversations(Request $request): mixed
+    public function searchForAutocomplete(string $query, array $fields = ['subject']): mixed
     {
         $select = ['id', 'subject', 'status'];
-        $conditions = ['subject'];
-        return $this->conversationRepository->autocompleteSearch($request, $select, $conditions);
+
+        // Simular Request para o método do repository
+        $mockRequest = new \Illuminate\Http\Request(['q' => $query]);
+
+        return $this->conversationRepository->autocompleteSearch($mockRequest, $select, $fields);
     }
 
     /**
@@ -281,7 +286,7 @@ class ConversationService
     {
         $status = ConversationStatus::from($newStatus);
 
-        match($status) {
+        match ($status) {
             ConversationStatus::ASSIGNED => $this->eventDispatcher->dispatch(
                 new ConversationAssigned($conversation, $conversation->assignedTo ?? 0)
             ),
@@ -301,7 +306,7 @@ class ConversationService
             ]);
         }
 
-       /*  if ($contact->isBlocked) {
+        /*  if ($contact->isBlocked) {
             throw ValidationException::withMessages([
                 'contact_id' => 'Não é possível criar conversa com contato bloqueado.'
             ]);

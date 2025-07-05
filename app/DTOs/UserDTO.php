@@ -21,6 +21,7 @@ readonly class UserDTO
         public string $timezone,
         public string $language,
         public bool $isActive,
+        public ?string $erpUserId,
         public \DateTime $createdAt,
         public \DateTime $updatedAt
     ) {}
@@ -40,6 +41,7 @@ readonly class UserDTO
             timezone: $user->timezone,
             language: $user->language,
             isActive: $user->is_active,
+            erpUserId: $user->erp_user_id,
             createdAt: $user->created_at,
             updatedAt: $user->updated_at
         );
@@ -60,6 +62,7 @@ readonly class UserDTO
             'timezone' => $this->timezone,
             'language' => $this->language,
             'is_active' => $this->isActive,
+            'erp_user_id' => $this->erpUserId,
             'created_at' => $this->createdAt->format('Y-m-d H:i:s'),
             'updated_at' => $this->updatedAt->format('Y-m-d H:i:s'),
         ];

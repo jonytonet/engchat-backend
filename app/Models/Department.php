@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @OA\Schema(
+ * 
+ *
+ * @OA\Schema (
  *     schema="Department",
  *     title="Department",
  *     description="Model representing a department within the organization",
@@ -23,6 +25,37 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *     @OA\Property(property="created_at", type="string", format="date-time", description="Creation timestamp"),
  *     @OA\Property(property="updated_at", type="string", format="date-time", description="Last update timestamp")
  * )
+ * @property int $id
+ * @property string $name
+ * @property string|null $description
+ * @property int|null $manager_id
+ * @property bool $is_active
+ * @property array<array-key, mixed>|null $working_hours
+ * @property bool $auto_assignment_enabled
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $activeUsers
+ * @property-read int|null $active_users_count
+ * @property-read \App\Models\User|null $manager
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $onlineUsers
+ * @property-read int|null $online_users_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
+ * @property-read int|null $users_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Department active()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Department newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Department newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Department query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Department whereAutoAssignmentEnabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Department whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Department whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Department whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Department whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Department whereManagerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Department whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Department whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Department whereWorkingHours($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Department withAutoAssignment()
+ * @mixin \Eloquent
  */
 class Department extends Model
 {
