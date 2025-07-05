@@ -44,4 +44,22 @@ final readonly class ContactQueryService
     {
         return Contact::where('businesspartner_id', $businessPartnerId)->exists();
     }
+
+    /**
+     * Find contact by phone number.
+     */
+    public function findByPhone(string $phoneNumber): ?Contact
+    {
+        return Contact::where('phone', $phoneNumber)->first();
+    }
+
+    /**
+     * Find contact by phone number and return DTO.
+     */
+    public function findByPhoneAsDTO(string $phoneNumber): ?ContactDTO
+    {
+        $contact = $this->findByPhone($phoneNumber);
+        
+        return $contact ? ContactDTO::fromModel($contact) : null;
+    }
 }

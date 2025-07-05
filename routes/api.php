@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\ConversationController;
+use App\Http\Controllers\Api\WhatsAppWebhookController;
+use App\Http\Controllers\Api\WhatsAppMessageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -46,11 +48,38 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Route::apiResource('messages', MessageController::class);
     // Route::apiResource('contacts', ContactController::class);
     // Route::apiResource('channels', ChannelController::class);
+
+    // WhatsApp API - Envio de mensagens (protegido)
+    Route::prefix('whatsapp')->name('whatsapp.')->group(function () {
+        Route::post('send-text', [WhatsAppMessageController::class, 'sendText'])
+            ->name('send-text');
+        
+        Route::post('send-template', [WhatsAppMessageController::class, 'sendTemplate'])
+            ->name('send-template');
+        
+        Route::post('send-media', [WhatsAppMessageController::class, 'sendMedia'])
+            ->name('send-media');
+        
+        Route::post('mark-read', [WhatsAppMessageController::class, 'markAsRead'])
+            ->name('mark-read');
+        
+        Route::get('templates', [WhatsAppMessageController::class, 'getTemplates'])
+            ->name('templates');
+        
+        Route::get('status', [WhatsAppMessageController::class, 'getStatus'])
+            ->name('status');
+    });
 });
 
 // Rotas públicas (webhook, etc)
 Route::prefix('webhooks')->name('webhooks.')->group(function () {
-    // TODO: Implementar webhooks dos canais
-    // Route::post('whatsapp', [WhatsAppWebhookController::class, 'handle']);
+    // WhatsApp Webhook - público (Facebook precisa acessar)
+    Route::get('whatsapp', [WhatsAppWebhookController::class, 'verify'])
+        ->name('whatsapp.verify');
+    
+    Route::post('whatsapp', [WhatsAppWebhookController::class, 'handle'])
+        ->name('whatsapp.handle');
+    
+    // TODO: Implementar outros webhooks
     // Route::post('instagram', [InstagramWebhookController::class, 'handle']);
 });
